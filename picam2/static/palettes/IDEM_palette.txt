@@ -1,0 +1,18 @@
+
+/* 
+    CSS HEXCODES:
+        * TAKEN FROM MARTIN GARRIX - IDEM.
+*/
+
+--opal: #afc6c2;
+--gumbo: #7aa5a4;
+--gable-green: #112528;
+--oracle: #356f75;
+--patina: #609294;
+--juniper: #608181;
+--pewter: #90a4a0;
+--blumine: #1b5a65;
+--nile-blue: #174952;
+--limed-spruce: #395456;
+
+

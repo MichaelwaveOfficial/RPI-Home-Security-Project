@@ -1,0 +1,46 @@
+<!--
+
+ICONS FOR URL NAVIGATION SOURCED FROM davooda.com \/ \/ \/
+
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+        <title>{{ title }}</title>
+        {% block head %}
+        {% endblock head %}
+    </head>
+    <body>
+        
+        <!-- Page navigation.-->
+        <ul class = 'nav-links'>
+            <li>
+                <a href="/captures">
+                    <img src="{{ url_for('static', filename='icons/capture_icon.png')}}" alt="captures">
+                </a>
+            </li>
+            <li>
+                <a href="/">
+                    <img src="{{ url_for('static', filename='icons/camera_icon.png')}}" alt="index">
+                </a>
+            </li>
+            <li>
+                <a href="/settings">
+                    <img src="{{ url_for('static', filename='icons/settings_icon.png')}}" alt="settings">
+                </a>
+            </li>
+        </ul>
+
+        <div class="main-container">
+            {% block body %}
+                <!-- Render page specific content here. -->
+            {% endblock body %}
+        </div>
+
+    </body>
+</html>

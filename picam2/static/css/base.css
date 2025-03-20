@@ -1,0 +1,191 @@
+
+:root{
+
+    /* Root colour palette taken from IDEM - Martin Garrix. */
+
+    --opal: #afc6c2;
+    --gumbo: #7aa5a4;
+    --gable-green: #112528;
+    --oracle: #356f75;
+    --patina: #609294;
+    --juniper: #608181;
+    --pewter: #90a4a0;
+    --blumine: #1b5a65;
+    --nile-blue: #174952;
+    --limed-spruce: #395456;
+
+    /* Colours. */
+
+    --primary-background: var(--gable-green);
+    --secondary-background: var(--patina);
+    --tertiary-background : var(--oracle);
+
+    --primary-font-colour:#112528;
+    --secondary-font-colour:#90a4a0;
+    --link--colour:#1b5a65;
+    --h1-font-colour:#174952;
+    --h2-font-colour:#356f75;
+
+    --primary-button-colour:#1b5a65;
+    --secondary-button-colour:#7aa5a4;
+    
+    --hover-colour:#395456;
+
+    --icon-colour:#90a4a0;
+
+    --container-shadow-colour:#174952;
+
+    /* Caligraphy. */
+
+    --font-weight-normal: 400;
+    --font-weight-bold: 700;
+
+    --font-size-body: 16px;
+    --font-size-h1: 48px;
+    --font-size-h2: 36px;
+    --font-size-h3: 30px;
+    --font-size-small: 14px;
+
+}
+
+@font-face {
+    font-family: 'red-hat-custom';
+    src: url(../fonts/RedHatDisplay-VariableFont_wght.ttf);
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'red-hat-custom';
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    background-color: var(--primary-background);
+    
+}
+
+ul {
+    position: fixed;
+    bottom: 2%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px;
+    gap: 20px;
+    width: 90%;
+    background-color: var(--secondary-background);
+    border-radius: 25px;
+    z-index: 15;
+    list-style-type: none;
+}
+
+.main-container {
+    overflow: hidden;
+}
+
+.nav-links {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--primary-font-colour);
+}
+
+.nav-links a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-links img {
+    max-width: 70%;
+    height: auto;
+    transition: filter 0.4s ease;
+}
+
+.nav-links a:hover img {
+    filter: grayscale(500%) brightness(500%) contrast(500%);
+}
+
+
+/* TOGGLE SWITCHES. */
+
+input[type=checkbox] {
+    height: 0;
+    width: 0;
+}
+
+label {
+    display: block;
+    cursor: pointer;
+    width: 60px;
+    text-indent: -9999px;
+    background: grey;
+    border-radius: 100px;
+    position: relative;
+}
+
+label:after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 90px;
+    transition: 0.3s;
+}
+
+input:checked + label {
+    background: #bada55;
+}
+
+input:checked + label:after {
+    left: calc(100% - 5px);
+    transform: translate(-100%);
+}
+
+label:active:after {
+    width: 10px;
+}
+
+/* SORTING BUTTONS */
+
+.sort-button {
+    background-color: var(--tertiary-background);
+    width: 20%;
+    font-size: 1.25em;
+    border: none;
+    padding: 2px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sort-button:hover {
+    background-color: var(--secondary-button-colour);
+}
+
+/* SEARCH BARS */
+
+.search-bar {
+    width: -webkit-fill-available;
+    border-radius: 12px;
+    border-color: var(--primary-background);
+    padding: 4px;
+    font-size: 1em;
+    background-color: var(--tertiary-background);
+    color: var(--primary-font-colour);
+    color: black;
+}
+
+
+/*
+
+    Need creative ways to represent the nav menu on mobile.
+
+*/

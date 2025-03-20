@@ -1,6 +1,6 @@
 ''' Basic web server leveraging Flask web framework where video is streamed from the raspberry pis camera. '''
 
-from flask import Flask, Response
+from flask import Flask, Response, render_template
 from camera import Camera
 from settings import *
 
@@ -14,6 +14,14 @@ camera = Camera(
     content_type=content_type,
     use_video_port=use_video_port
 )
+
+
+@app.route('/')
+def index():
+
+    return render_template(
+        'index.html'
+    )
 
 
 @app.route('/video_feed')
