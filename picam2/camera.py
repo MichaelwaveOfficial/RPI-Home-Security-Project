@@ -3,6 +3,7 @@ import io
 import picamera2
 import cv2
 from ObjectDetection import ObjectDetection
+from Annotate import Annotations
 
 
 class Camera(object):
@@ -24,6 +25,7 @@ class Camera(object):
         self.content_type = content_type
         self.use_video_port = use_video_port
         self.object_detection = ObjectDetection()
+        self.annotations = Annotations()
 
     
     def generate_frames(self):
@@ -51,7 +53,7 @@ class Camera(object):
 
                 if len(detection_bboxes) > 1:
 
-                    annotated_frame = self.object_detection.annotate_detections(frame, detection_bboxes)
+                    annotated_frame = self.annotations.annotate_frame(frame, detection_bboxes)
                 
                 else:
 
