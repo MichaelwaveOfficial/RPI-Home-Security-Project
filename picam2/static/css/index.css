@@ -30,50 +30,8 @@
     border-radius: 10px;
 }
 
-
-/* Spinner for camera loading. */
-
-.spinner-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.live-feed-window img {
     width: 100%;
-    height: 100%;
+    height: -webkit-fill-available;
 }
 
-.spinner {
-    color: var(--tertiary-background);
-    position: relative;
-}
-
-.spinner, .spinner:after {
-    box-sizing: border-box;
-}
-
-.spinner {
-    width: 15%;
-    height: 15%;
-    transform: translateX(40%) translateY(30%);
-}
-
-.spinner:after {
-    content: '';
-    display: block;
-    width: 20%;
-    height: 60%;
-    border-radius: 50px;
-    border: 6.4px solid currentColor;
-    border-color: currentColor transparent currentColor transparent;
-    animation: spinner 1.2s linear infinite;
-    transform: translate(-50%, -50%);
-}
-
-@keyframes spinner {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}

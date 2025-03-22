@@ -11,8 +11,8 @@ class ObjectDetection(object):
         On top of this, helper functions pertaining to the handling of detections can also be found within this module. 
     '''
 
-    def __init__(self):
-        pass
+    def __init__(self, min_contour_area : int):
+        self.min_contour_area = min_contour_area
 
 
     def process_frame(self, frame : np.ndarray) -> np.ndarray:
@@ -26,7 +26,7 @@ class ObjectDetection(object):
         return cv2.GaussianBlur(frame_greyscale, (21, 21), 0)
 
 
-    def detect_motion(self, prev_frame : np.ndarray, curr_frame : np.ndarray, binarisation_threshold : int = 25, min_contour_area : int = 500) -> tuple[np.ndarray, list[np.ndarray]]:
+    def detect_motion(self, prev_frame : np.ndarray, curr_frame : np.ndarray, binarisation_threshold : int = 25) -> tuple[np.ndarray, list[np.ndarray]]:
 
         ''' Detect motion in frame utilising traditional computer vision techniques. '''
 
@@ -46,15 +46,30 @@ class ObjectDetection(object):
         _, frame_thresholded = cv2.threshold(frame_difference, binarisation_threshold, 255, cv2.THRESH_BINARY)
 
         # Dilate on the thresholded frame to fill in the gaps and solidify contour areas.
-        frame_dilation = cv2.dilate(frame_thresholded, None, iterations=3)
+        frame_dilation = cv2.dilate(frame_thresholded, None, iterations=5)
 
         # Fetch regions in the frame where motion has been detected. 
         contours = cv2.findContours(frame_dilation.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
 
         # Store list of detected motion areas.
-        filtered_contours = [contour for contour in contours if cv2.contourArea(contour) > min_contour_area]
+        filtered_contours = [contour for contour in contours if cv2.contourArea(contour) > self.min_contour_area]
+        
+        # Select the largest detected contour from the filtered list.
+        largest_contour = max(filtered_contours, key=cv2.contourArea, default=None)
 
-        # Iterate over the filtrated detections.
+        # Mitigate bugs, ensure largest contour has been found.
+        if largest_contour is not None:
+            
+            # Unpack detection bounding box values from largest contour.
+            x1, y1, w, h = cv2.boundingRect(largest_contour)
+
+            # Append these values to a dictionary for each detection. Convert to x1, y1, x2, y2 format.
+            detection = {'x1' : int(x1), 'y1' : int(y1), 'x2' : int(x1 + w), 'y2' : int(y1 + h)}
+
+            # Add to bboxes list.
+            bboxes.append(detection)
+
+        """# Iterate over the filtrated detections.
         for contour in filtered_contours:
             
             # Use opencv to draw a bounding box around the detected contour, unpack its values. 
@@ -64,7 +79,7 @@ class ObjectDetection(object):
             detection = {'x1' : int(x1), 'y1' : int(y1), 'x2' : int(x1 + w), 'y2' : int(y1 + h)}
 
             # Add to bboxes list.
-            bboxes.append(detection)
+            bboxes.append(detection)"""
 
         # Return process frame and parsed bounding boxes
         return frame_dilation, bboxes

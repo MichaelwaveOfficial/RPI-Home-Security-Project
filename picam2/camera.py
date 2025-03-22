@@ -24,7 +24,7 @@ class Camera(object):
         self.framerate = framerate
         self.content_type = content_type
         self.use_video_port = use_video_port
-        self.object_detection = ObjectDetection()
+        self.object_detection = ObjectDetection(min_contour_area=450)
         self.annotations = Annotations()
 
     
@@ -32,48 +32,48 @@ class Camera(object):
 
         prev_frame = None
 
-        camera = picamera2.Picamera2()
+        with picamera2.Picamera2() as camera:
         
-        configuration = camera.create_video_configuration(
-            main={
-                'size' : self.resolution
-            }
-        )
+            configuration = camera.create_video_configuration(
+                main={
+                    'size' : self.resolution
+                }
+            )
 
-        camera.configure(configuration)
-        camera.start()
+            camera.configure(configuration)
+            camera.start()
 
-        while True:
+            while True:
 
-            frame = camera.capture_array()
+                frame = camera.capture_array()
 
-            if prev_frame is not None:
+                if prev_frame is not None:
 
-                _, detection_bboxes = self.object_detection.detect_motion(prev_frame, frame)
+                    _, detection_bboxes = self.object_detection.detect_motion(prev_frame, frame)
 
-                if len(detection_bboxes) > 1:
+                    if len(detection_bboxes) > 1:
 
-                    annotated_frame = self.annotations.annotate_frame(frame, detection_bboxes)
-                
+                        annotated_frame = self.annotations.annotate_frame(frame, detection_bboxes)
+                    
+                    else:
+
+                        annotated_frame = frame.copy()
+
                 else:
 
                     annotated_frame = frame.copy()
+            
+                prev_frame = frame.copy()
 
-            else:
+                frame = cv2.cvtColor(annotated_frame, cv2.COLOR_RGB2BGR)
 
-                annotated_frame = frame.copy()
-        
-            prev_frame = frame.copy()
+                _, buffer = cv2.imencode('.jpg', frame)
 
-            frame = cv2.cvtColor(annotated_frame, cv2.COLOR_RGB2BGR)
+                frame_bytes = buffer.tobytes()
 
-            _, buffer = cv2.imencode('.jpg', frame)
+                multipart_frame = (
+                    b'--frame\r\n'
+                    b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n'
+                )
 
-            frame_bytes = buffer.tobytes()
-
-            multipart_frame = (
-                b'--frame\r\n'
-                b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n'
-            )
-
-            yield multipart_frame
+                yield multipart_frame
