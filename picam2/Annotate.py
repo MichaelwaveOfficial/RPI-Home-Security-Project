@@ -1,5 +1,6 @@
 import cv2 
 import numpy as np
+from BboxUtils import measure_euclidean_distance, calculate_center_point
 
 
 class Annotations(object):
@@ -41,7 +42,7 @@ class Annotations(object):
         self.thickness = 8
 
 
-    def annotate_frame(self, frame : np.ndarray, detections : list[dict], vision_type : str = 'object_detection') -> np.ndarray:
+    def annotate_frame(self, frame : np.ndarray, detections : list[dict]) -> np.ndarray:
 
         ''' 
             Abstracted function to iterated over detections being ingested and apply annotation functions to render
@@ -62,7 +63,7 @@ class Annotations(object):
             frame = self.annotate_bbox_corners(frame, detection)
 
             # Annotate metadata labels.
-            frame = self.annotate_label(frame, detection, vision_type)
+            frame = self.annotate_label(frame, detection, 'object_detection')
 
         # Return annotated frame. 
         return frame
@@ -83,7 +84,12 @@ class Annotations(object):
         '''
 
         # Fetch detection bounding box values, typecast to full integer values. 
-        x1, y1, x2, y2 = int(detection['x1']), int(detection['y1']), int(detection['x2']), int(detection['y2'])
+        x1, y1, x2, y2 = (
+            int(detection.get('x1')),
+            int(detection.get('y1')),
+            int(detection.get('x2')),
+            int(detection.get('y2'))
+        )
 
         # Calculate detection dimensions.
         detection_size = min(x2 - x1, y2 - y1)
@@ -308,7 +314,7 @@ class Annotations(object):
         y2= int(detection['y2'])
 
         # Fetch detection center point values.
-        center_x, center_y = self.calculate_center_point(detection)
+        center_x, center_y = calculate_center_point(detection)
 
         # Fetch text dimensions and scale.
         text_size, font_scale = self.fetch_text_properties(detection_label, frame)
@@ -341,105 +347,3 @@ class Annotations(object):
 
         # Return label from given vision type.
         return detection_labels.get(vision_type, 'object_detection')
-
-
-    def annotate_center_point(self, frame : np.ndarray, center_point : tuple[int, int]) -> np.ndarray:
-
-        '''
-            Annotate a detections center point onto the frame. 
-
-            Paramaters:
-                * frame : (np.ndarray) : The frame to be drawn upon.
-                * center_point : (tuple[int, int]) : center x and center y coordinates of the detections center. 
-            Returns:
-                * frame : (np.ndarray) : The modified frame with a drawn center point.
-        '''
-
-        # Unpack center x and y values. 
-        center_x, center_y = center_point
-
-        # Use cv2 function to draw center point dot. 
-        cv2.circle(
-            frame,
-            (center_x, center_y),
-            self.center_point_radius,
-            self.bbox_colours['offender'],
-            self.thickness
-        )  
-
-        # Return frame with annotated center point.
-        return frame 
-        
-
-    def annotate_center_point_trail(self, frame : np.ndarray, center_points : list[tuple[int, int]]) -> np.ndarray:
-
-        '''
-            Annotate a detections center point onto the frame. 
-
-            Paramaters:
-                * frame : (np.ndarray) : The frame to be drawn upon.
-                * detection : (dict) : Detection dictionary containing a list of its prior center points to annotate 
-                    its trail over time. 
-            Returns:
-                * frame : (np.ndarray) : Modified frame where trail has been drawn. 
-        '''
-
-        if len(center_points) < 2:
-            return frame
-
-        # Iterate over center points list entries and render each onto frame.
-        for x in range(1, len(center_points)):
-            cv2.line(
-                frame,
-                center_points[x - 1],
-                center_points[x],
-                self.bbox_colours['trail'],
-                self.trail_thickness
-            )
-
-        # Annotate last most center point.
-        self.annotate_center_point(frame, center_points[0])
-        # Render current most center point value.
-        self.annotate_center_point(frame, center_points[-1])
-
-        # Return frame with center point trail.
-        return frame
-    
-
-    def calculate_center_point(self, detection):
-
-        '''
-            Simple function to calculate the center point of a given detection. This can be useful for both 
-            annotation and tracking purposes. 
-
-            Parameters:
-                * bbox : dict -> the detections metadata to calculate the center point. 
-
-            Returns: 
-                * center_x, center_y : tuple -> two floating point values representing the detections center 
-                    on the x and y axis. 
-        '''
-
-        x1, y1, x2, y2 = int(detection['x1']), int(detection['y1']), int(detection['x2']), int(detection['y2'])
-
-        center_x, center_y = (x1 + x2) / 2, (y1 + y2) / 2
-
-        return int(center_x), int(center_y)
-
-
-    def measure_euclidean_distance(self, p1, p2):
-
-        '''
-            Function to measure the straight-line distance between two points. Gets the sqaure values of the inputs and sqaures the output
-                to help reduce computation. 
-
-            Paramaters:
-                * p1 : tuple -> (x1, y1), detection start position.
-                * p2 : tuple -> (x2,y2), detection end position.
-
-            Returns:
-                * euclidean_distance : float -> distance between one position and another. 
-        '''
-
-        return (p1[0] - p2[0]) **2 + (p1[1] - p2[1]) **2
-    

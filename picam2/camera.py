@@ -3,6 +3,7 @@ import io
 import picamera2
 import cv2
 from ObjectDetection import ObjectDetection
+from ObjectTracking import ObjectTracking
 from Annotate import Annotations
 
 
@@ -24,8 +25,9 @@ class Camera(object):
         self.framerate = framerate
         self.content_type = content_type
         self.use_video_port = use_video_port
-        self.object_detection = ObjectDetection(min_contour_area=650)
+        self.object_detection = ObjectDetection(min_contour_area=2500)
         self.annotations = Annotations()
+        self.tracking = ObjectTracking()
 
     
     def generate_frames(self):
@@ -53,11 +55,15 @@ class Camera(object):
 
                         if detection_bboxes:
 
-                            annotated_frame = self.annotations.annotate_frame(frame, detection_bboxes)
+                            tracked_detections = self.tracking.update_tracker(detection_bboxes)
+
+                            print(tracked_detections)
+
+                            frame = self.annotations.annotate_frame(frame=frame, detections=tracked_detections)
                 
                     prev_frame = frame
 
-                    frame = cv2.cvtColor(annotated_frame, cv2.COLOR_RGB2BGR)
+                    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
                     _, buffer = cv2.imencode('.jpg', frame)
 
