@@ -98,6 +98,7 @@ class Annotations(object):
         # Store corner values within a list.
         bbox_corners = [
             ((x1 + corner_radius, y1 + corner_radius), 180, 270),
+
             ((x1 + corner_radius, y2 - corner_radius), 90, 180),
             ((x2 - corner_radius, y1 + corner_radius), 270, 360),
             ((x2 - corner_radius, y2 - corner_radius), 0, 90)
@@ -309,10 +310,6 @@ class Annotations(object):
         # Fetch detection center point values.
         center_x, center_y = self.calculate_center_point(detection)
 
-        # If object tracking, draw center point trail.
-        if vision_type == 'object_tracking':
-            frame = self.annotate_center_point_trail(frame=frame, center_points=detection.get('center_points', []))
-
         # Fetch text dimensions and scale.
         text_size, font_scale = self.fetch_text_properties(detection_label, frame)
         # Calculate appropriate label position.
@@ -326,7 +323,7 @@ class Annotations(object):
         return frame
     
 
-    def create_label(self, detection : dict, vision_type : str, captured_at = None) -> str:
+    def create_label(self, detection : dict, vision_type : str) -> str:
 
         '''
             Generate appropriate label to support required vision type.
@@ -334,7 +331,6 @@ class Annotations(object):
             Paramaters:
                 * detection : (dict) : Concerned detection to access its metadata.
                 * vision_type : (str) : String key value to access required label.
-                * captured_at : (float) : Time the detection is being processed at.
             Returns:
                 * label : (str) : String of required data values for annotation.
         '''

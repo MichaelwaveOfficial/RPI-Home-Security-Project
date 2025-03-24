@@ -24,56 +24,54 @@ class Camera(object):
         self.framerate = framerate
         self.content_type = content_type
         self.use_video_port = use_video_port
-        self.object_detection = ObjectDetection(min_contour_area=450)
+        self.object_detection = ObjectDetection(min_contour_area=650)
         self.annotations = Annotations()
 
     
     def generate_frames(self):
 
-        prev_frame = None
-
         with picamera2.Picamera2() as camera:
         
             configuration = camera.create_video_configuration(
-                main={
-                    'size' : self.resolution
-                }
+                main={'size' : self.resolution}
             )
 
             camera.configure(configuration)
             camera.start()
 
-            while True:
+            prev_frame = None
 
-                frame = camera.capture_array()
+            try:
 
-                if prev_frame is not None:
+                while True:
 
-                    _, detection_bboxes = self.object_detection.detect_motion(prev_frame, frame)
+                    frame = camera.capture_array()
 
-                    if len(detection_bboxes) > 1:
+                    if prev_frame is not None:
 
-                        annotated_frame = self.annotations.annotate_frame(frame, detection_bboxes)
-                    
-                    else:
+                        _, detection_bboxes = self.object_detection.detect_motion(prev_frame, frame)
 
-                        annotated_frame = frame.copy()
+                        if detection_bboxes:
 
-                else:
+                            annotated_frame = self.annotations.annotate_frame(frame, detection_bboxes)
+                
+                    prev_frame = frame
 
-                    annotated_frame = frame.copy()
+                    frame = cv2.cvtColor(annotated_frame, cv2.COLOR_RGB2BGR)
+
+                    _, buffer = cv2.imencode('.jpg', frame)
+
+                    frame_bytes = buffer.tobytes()
+
+                    multipart_frame = (
+                        b'--frame\r\n'
+                        b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n'
+                    )
+
+                    yield multipart_frame
             
-                prev_frame = frame.copy()
-
-                frame = cv2.cvtColor(annotated_frame, cv2.COLOR_RGB2BGR)
-
-                _, buffer = cv2.imencode('.jpg', frame)
-
-                frame_bytes = buffer.tobytes()
-
-                multipart_frame = (
-                    b'--frame\r\n'
-                    b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n'
-                )
-
-                yield multipart_frame
+            except GeneratorExit:
+                print('Client has since disconnected. Stream halting!')
+            
+            finally:
+                camera.stop()
