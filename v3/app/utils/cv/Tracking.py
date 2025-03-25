@@ -1,4 +1,4 @@
-from BboxUtils import calculate_center_point, measure_euclidean_distance
+from .BboxUtils import calculate_center_point, measure_euclidean_distance
 from time import time 
 
 

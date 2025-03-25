@@ -2,9 +2,11 @@
 import io 
 import picamera2
 import cv2
-from ObjectDetection import ObjectDetection
-from ObjectTracking import ObjectTracking
-from Annotate import Annotations
+from app.utils.cv.Detection import ObjectDetection
+from app.utils.cv.Tracking import ObjectTracking
+from app.utils.cv.Annotation import Annotations
+
+from app.Settings import min_contour_area
 
 
 class Camera(object):

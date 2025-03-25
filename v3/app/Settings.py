@@ -7,3 +7,5 @@ low_frame_rate = 20
 
 content_type = 'jpeg'
 use_video_port = True
+
+min_contour_area=2500

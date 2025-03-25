@@ -1,6 +1,6 @@
 import cv2 
 import numpy as np
-from BboxUtils import measure_euclidean_distance, calculate_center_point
+from .BboxUtils import measure_euclidean_distance, calculate_center_point
 
 
 class Annotations(object):
