@@ -6,7 +6,7 @@ class ObjectTracking(object):
 
     ''' Module to parse detection data, track them by assigning IDs and pruning them when no longer required. '''
 
-    def __init__(self, EUCLIDEAN_DISTANCE_THRESHOLD : int = 125, MAXIMUM_THREAT_LEVEL : int = 3, DEREGISTRATION_TIME : int = 4, ESCALATION_TIME : int = 5) -> None:
+    def __init__(self, EUCLIDEAN_DISTANCE_THRESHOLD : int = 125, MAXIMUM_THREAT_LEVEL : int = 3, DEREGISTRATION_TIME : int = 3, ESCALATION_TIME : int = 3) -> None:
         
         '''
             Instantiate Object tracking module.
@@ -151,6 +151,7 @@ class ObjectTracking(object):
 
         # Assign ID value to dictionary entry and required metadata.
         self.tracked_objects[self.ID_increment_counter] = {
+            'ID' : self.ID_increment_counter,
             'center_points' : [current_center_point],
             'first_detected' : seen_at,
             'last_detected' : seen_at,
@@ -181,7 +182,11 @@ class ObjectTracking(object):
         # Update time detection was last seen.
         self.tracked_objects[ID]['last_detected'] = updated_at
 
-        if time() - updated_at > self.ESCALATION_TIME:
+        elapsed_time = time() - updated_at
+
+        print(elapsed_time)
+
+        if elapsed_time > self.ESCALATION_TIME:
             self.tracked_objects[ID]['threat_level'] += 1
 
             if self.tracked_objects[ID]['threat_level'] > self.MAXIMUM_THREAT_LEVEL:
