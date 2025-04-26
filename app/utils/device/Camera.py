@@ -1,85 +1,53 @@
 
-import io 
-import picamera2
-import cv2
-from app.utils.cv.Detection import ObjectDetection
-from app.utils.cv.Tracking import ObjectTracking
-from app.utils.cv.Annotation import Annotations
-
-from app.Settings import min_contour_area
-
+from picamera2 import Picamera2
 
 class Camera(object):
 
     ''' Camera class to access and manipulate the devices onboard camera. '''
 
-    def __init__(self, resolution : tuple[int, int], framerate : int, content_type : str, use_video_port : bool):
+    def __init__(self, resolution : tuple[int, int], framerate : int):
 
         '''
             Paramaters:
                 * resolution : tuple[int, int] : Specified stream quality. Particularly width and height of the frame.
                 * framerate : int : Number of frames to be processed per second. 
-                * content_type : str : String value for image type.
-                * use_video_port : bool : True/False value whether or not the device should use its onboard video port or USB.
         '''
-        
+
         self.resolution = resolution
         self.framerate = framerate
-        self.content_type = content_type
-        self.use_video_port = use_video_port
-        self.object_detection = ObjectDetection(min_contour_area=2500)
-        self.annotations = Annotations()
-        self.tracking = ObjectTracking()
+        self.camera = Picamera2()
+        self.configuration = self.camera.create_video_configuration(
+            main={
+                'size' : resolution
+            }
+        )
+        self.camera.configure(self.configuration)
+        self.camera.set_controls({'FrameRate' : self.framerate})
+        self.camera.start()
+        
+
+    def read_frame(self):
+
+        ''' Capture frame from onboard camera. '''
+
+        try:
+
+            frame = self.camera.capture_array()
+
+            if frame is None:
+                raise RuntimeError('Failed to capture frame: capture_array() method returned None.')
+
+            return frame 
+            
+        except Exception as e:
+            raise RuntimeError(f'Error reading frame from devices onboard camera: {e}')
+
+        return self.camera.capture_array()
 
     
-    def generate_frames(self):
+    def halt(self):
 
-        with picamera2.Picamera2() as camera:
-        
-            configuration = camera.create_video_configuration(
-                main={'size' : self.resolution}
-            )
+        ''' Close camera for resource cleanup. ''' 
 
-            camera.configure(configuration)
-            camera.start()
-
-            prev_frame = None
-
-            try:
-
-                while True:
-
-                    frame = camera.capture_array()
-
-                    if prev_frame is not None:
-
-                        _, detection_bboxes = self.object_detection.detect_motion(prev_frame, frame)
-
-                        if detection_bboxes:
-
-                            tracked_detections = self.tracking.update_tracker(detection_bboxes)
-
-                            print(tracked_detections)
-
-                            frame = self.annotations.annotate_frame(frame=frame, detections=tracked_detections)
-                
-                    prev_frame = frame
-
-                    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-
-                    _, buffer = cv2.imencode('.jpg', frame)
-
-                    frame_bytes = buffer.tobytes()
-
-                    multipart_frame = (
-                        b'--frame\r\n'
-                        b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n'
-                    )
-
-                    yield multipart_frame
-            
-            except GeneratorExit:
-                print('Client has since disconnected. Stream halting!')
-            
-            finally:
-                camera.stop()
+        self.camera.stop()
+        self.camera.close()

@@ -1,17 +1,15 @@
 from flask import Blueprint, Response, render_template
-from .utils.device.Camera import Camera
+from .Pipeline import SurveillancePipeline
+
 from app.Settings import *
 
 
 # Register main app blueprint.
 main = Blueprint('main', __name__)
 
-# Instantiate Camera Object, apply settings.
-camera = Camera(
+pipeline = SurveillancePipeline(
     resolution=high_resolution,
-    framerate=high_frame_rate,
-    content_type=content_type,
-    use_video_port=use_video_port
+    framerate=high_frame_rate
 )
 
 
@@ -29,7 +27,7 @@ def video_feed():
     ''' Route leveraging a generator function to stream captured video frames to the client. '''
 
     return Response(
-        camera.generate_frames(),
+        pipeline.generate_frames(),
         mimetype='multipart/x-mixed-replace; boundary=frame'
     )
 
@@ -48,6 +46,8 @@ def settings():
 def update_settings():
 
     ''' Update camera settings based on user form input. '''
+
+    pass 
 
 
 

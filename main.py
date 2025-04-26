@@ -10,7 +10,8 @@ def main():
     app.run(
         host='0.0.0.0',
         port=5000,
-        debug=os.getenv('DEBUG', 'TRUE')
+        debug=os.getenv('DEBUG', 'TRUE'),
+        threaded=True
     )
 
 
