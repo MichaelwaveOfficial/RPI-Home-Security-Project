@@ -27,9 +27,6 @@ class Camera(object):
 
         # Initialise camera in constructor when object is called. 
         self.initialise_camera()
-        print(">>> Camera object:", self.camera)
-        print(">>> is_active() →", self.is_active())
-
 
     
     def is_active(self):
