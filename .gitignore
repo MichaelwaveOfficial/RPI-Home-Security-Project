@@ -173,3 +173,6 @@ cython_debug/
 ## App specific dirs.
 captures/
 picam2/__pycache__/camera.cpython-311.pyc
+
+## App venvs
+venv/ 

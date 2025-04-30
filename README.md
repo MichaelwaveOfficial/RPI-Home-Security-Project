@@ -65,6 +65,9 @@ Clone this git repo with:
 
 Install dependencies:
 
+    * sudo apt update
+    * sudo apt upgrade
+    * sudo apt install -y python3-picamera2
     * pip install -r requirements.txt 
 
 ## ⚙️ Configuration

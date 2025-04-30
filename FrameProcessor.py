@@ -1,0 +1,61 @@
+
+import cv2 
+
+class FrameProcessor(object):
+
+    ''' Pipeline processing class. '''
+
+    def __init__(self, camera):
+
+        ''' camera : Camera - Camera object. '''
+
+        self.camera = camera
+
+    
+    def generate_frames(self):
+
+        ''' Generator function to yield JPEG fames encoded for Flask web server streaming. '''
+
+        try:
+
+            while True:
+                
+                # Fetch frame from camera.
+                frame = self.camera.read_frame()
+
+                frame = self.convert_frame_colour_channels(frame)
+
+                # Encode raw frame.
+                encoded_frame = self.encode_frame_2_jpeg(frame)
+
+                # Yield that frame for streaming.
+                yield (
+                    b'--frame\r\n'
+                    b'Content-Type: image/jpeg\r\n\r\n' + encoded_frame + b'\r\n'
+                )
+
+        except GeneratorExit:
+
+            # Handle failuer gracefully.
+            print('Camera client has since disconnected.')
+
+        finally:
+
+            # Resource clean up.
+            self.camera.close_camera()
+
+    
+    def encode_frame_2_jpeg(self, frame):
+
+        success, buffer = cv2.imencode('.jpg', frame)
+
+        if not success:
+            raise ValueError('Failed to encode frame, please check input.')
+
+        return buffer.tobytes()
+
+    
+    def convert_frame_colour_channels(self, frame):
+
+        return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
