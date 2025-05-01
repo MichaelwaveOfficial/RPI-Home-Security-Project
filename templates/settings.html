@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css') }}">
+{% endblock head %}
+
+{% block body %}
+
+    <form id='settings-form' method="POST" action="{{ url_for('update_settings') }}">
+
+        <div class="scroll-container">
+
+            <h2 class="scroll-container-title">Motion:</h2>
+    
+            <p>Fine tune the motion detection for your requirements.</p>
+
+            <div class="settings-container">
+                
+                <h3>Sensitivity : <span class = 'slider-output' id="slider-output0">{{ settings.motion_detection.sensitivity }}</span> Pixels</h3>
+                <p>Adjust how sensitive the system is towards a detections movement.</p>
+        
+                <div class="slider-container">
+                    <p>1</p>
+                    <input type="range" name="motion_detection[sensitivity]" min="1" max="100" value="{{ settings.motion_detection.sensitivity }}" class="slider" id="slider0">
+                    <p>100 </p>
+                </div>
+        
+                <h3>Threat Escalation : <span class = 'slider-output' id="slider-output1">{{ settings.motion_detection.threat_escalation_timer }}</span> Seconds</h3>
+                <p>Customise how long an object needs to be tracked before escalation of its threat level.</p>
+        
+                <div class="slider-container">
+                    <p>1</p>
+                    <input type="range" name="motion_detection[threat_escalation_timer]" min="1" max="60" value="{{ settings.motion_detection.threat_escalation_timer }}" class="slider" id="slider1">
+                    <p>60</p>
+                </div>
+        
+                <h3>Maximim Threat Level : Level <span class = 'slider-output' id="slider-output2">{{ settings.motion_detection.maximum_threat_threshold }}</span></h3>
+                <p>Determine a detections maximum threshold to be exceeded in order to consider it a serious threat.</p>
+        
+                <div class="slider-container">
+                    <p>1</p>
+                    <input type="range"  name="motion_detection[maximum_threat_threshold]" min="1" max="10" value="{{ settings.motion_detection.maximum_threat_threshold }}" class="slider" id="slider2">
+                    <p>10</p>
+                </div>
+
+            </div>
+    
+        </div>
+    
+    
+        <div class="scroll-container">
+    
+            <h2 class="scroll-container-title">Stream:</h2>
+    
+            <p>Fine tune the stream to leverage either performance or quality.</p>
+    
+            <div class="settings-container">
+    
+                <p>Tailor the video settings for performance or quality.</p>
+    
+                <h3>Preferred Quality : <span class = 'toggle-output' id="select-output0">{{ settings.stream_quality.preferred_quality }}</span></h3>
+                <p>Tune the quality of the stream. 
+                    Lower resolution will enhance the device performance and reduce overheads whilst higher resolutions will deliver better quality.
+                </p>
+    
+                    <select class='select' id='preferred_quality'  name="stream_quality[preferred_quality]">
+    
+                        {% for stream_type, setting in settings.stream_quality.items()  if stream_type != 'preferred_quality' %}
+    
+                            <option value="{{ stream_type }}" >
+                                Framerate: {{ setting.framerate }} | Resolution: {{ setting.resolution[0] }}x{{ setting.resolution[1] }}
+                            </option>
+    
+                        {% endfor %}
+    
+                    </select>
+    
+            </div>
+    
+        </div>
+    
+        <div class="scroll-container">
+    
+            <h2 class="scroll-container-title">Alerts</h2>
+            <p>Tailor the applications frequency of communications to your liking.</p>
+
+            <div class="settings-container">
+
+                <h3>Toggle : <span class = 'toggle-output' id="toggle-output0">{{ settings.alerts.toggle }}</span></h3>
+                <p>Customise when the device should be placed in passive mpode</p>
+        
+                <div class="toggle-container">
+                    <p>Toggle alerts off / on. </p>
+                    <input type="checkbox" class="toggle"  name="alerts[toggle]" id="toggle0" value="{{ settings.alerts.toggle }}"
+                    {% if settings.alerts.toggle %} checked {% endif %}>
+                    <label for="toggle0">Toggle</label>
+                </div>
+        
+                <h3>Frequency : <span class = 'slider-output' id="slider-output3">{{ settings.alerts.frequency }}</span> Seconds</h3>
+                <p>The frequency of which the device will notify you.</p>
+        
+                <div class="slider-container">
+                    <p>1 second</p>
+                    <input type="range"  name="alerts[frequency]" min="1" max="1800" value="{{ settings.alerts.frequency }}" class="slider" id="slider3">
+                    <p>2 minutes</p>
+                </div>
+
+            </div>
+    
+        </div>
+    
+    
+        <div class="scroll-container">
+    
+            <h2 class="scroll-container-title">Email Client</h2>
+            <p>Input your email client account details to recieve email alerts.</p>
+
+            <div class="settings-container">
+
+                <h3>Target Email.</h3>
+                <p>The designated recipient of the detections email once a threat has been identified.</p>
+                <input type="email"  name="client[target_email]" value="{{ settings.client.target_email }}">
+        
+                <h3>App Password.</h3>
+                <p>Generated app password from your google account where emails will be sent from.</p>
+                <input type="password"  name="client[app_password]" value="{{ settings.client.app_password }}">
+
+            </div>
+    
+        </div>
+
+    </form>
+
+{% block extra_js %}
+    <!-- Inject page speicfic JavaScript here. -->
+    <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock extra_js %}
+
+{% endblock body %}

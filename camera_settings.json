@@ -1,0 +1,32 @@
+{
+    "motion_detection": {
+        "sensitivity": 80,
+        "threat_escalation_timer": 15,
+        "maximum_threat_threshold": 3
+    },
+    "stream_quality": {
+        "preferred_quality": "performance",
+        "performance": {
+            "framerate": 20,
+            "resolution": [
+                640,
+                480
+            ]
+        },
+        "quality": {
+            "framerate": 30,
+            "resolution": [
+                1080,
+                720
+            ]
+        }
+    },
+    "alerts": {
+        "toggle": false,
+        "frequency": 727
+    },
+    "client": {
+        "target_email": "example@email.com",
+        "app_password": "password"
+    }
+}

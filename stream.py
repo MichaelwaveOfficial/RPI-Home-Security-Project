@@ -1,9 +1,12 @@
 ''' Basic web server leveraging Flask web framework where video is streamed from the raspberry pis camera. '''
 
-from flask import Flask, Response, render_template
+from flask import Flask, Response, render_template, request, jsonify
 from utils.Camera import Camera
 from FrameProcessor import FrameProcessor
 from settings import *
+from utils.ConfigManager import ConfigManager
+from utils.FileManager import FileManager
+import re
 
 # Instantiate Flask application.
 app = Flask(__name__)
@@ -16,6 +19,8 @@ camera = Camera(
     use_video_port=use_video_port
 )
 
+file_manager = FileManager()
+config_manager = ConfigManager(config_file=CAMERA_CONFIG_PATH, default_config=DEFAULT_SETTINGS)
 frame_processor = FrameProcessor(camera)
 
 @app.route('/')
@@ -45,7 +50,7 @@ def video_feed():
 
         # Otherwise, inform users camera is currently inactive.
         return render_template(
-            'camera_not_active.html',
+            'camera_not_active.html'
         ), 503
 
 
@@ -54,17 +59,63 @@ def video_feed():
 
 @app.route('/settings')
 def settings():
-    pass 
+
+    ''' Render settings paeg with current camera configuration. '''
+
+    settings = config_manager.load_settings()
+
+    return render_template(
+        'settings.html',
+        settings=settings
+    )
+
+
+@app.route('/settings/update', methods=['POST'])
+def update_settings():
+
+    ''' Update camera settings based on user form input. '''
+
+    try:
+
+        # Iterate over items and their values from form submission.
+        for key, updated_value in request.form.items():
+
+            # Leverage regular expressions to take objects array keys and put them into a list. 
+            keys = re.findall(r'\w+', key)
+
+            # Utilise config mangager method to update values.
+            config_manager.update_settings(keys, updated_value)
+
+        # Return JSON success response. 
+        return jsonify({"status": "success", "message": "Settings updated successfully"})
+    
+    except ValueError as e:
+        # Return JSON error response. 
+        return jsonify({"status": "error", "message": f"Failed to update settings!\n{e}"})
 
 
 @app.route('/captures')
 def captures():
-    pass 
+
+    filename = request.args.get('filename')
+    images = file_manager.access_stored_captures(CAPTURES_DIR)
+
+    image = file_manager.serve_file(filename, CAPTURES_DIR) if filename else None
+    
+
+    return render_template(
+        'captures.html',
+        images=images,
+        image=image
+    ) 
 
 
 @app.route('/device_status')
 def device_status():
-    pass 
+
+    return render_template(
+        'status.html'
+    ) 
 
 
 if __name__ == '__main__':

@@ -45,7 +45,7 @@ class FrameProcessor(object):
                         # Track the detections by assigning IDs.
                         tracked_detections = self.object_tracking.update_tracker(detection_bboxes)
 
-                        print(tracked_detections)
+                        #print(tracked_detections)
 
                         # Annotate detections in frame with processed detection data. 
                         frame = self.annotations.annotate_frame(frame=frame, detections=tracked_detections)

@@ -1,0 +1,106 @@
+
+/* Dropdown containers styling. */
+
+body {
+    overflow-y: hidden;
+}
+
+.main-container {
+    display: inline-grid;
+    width: 100%;
+    margin-top: 50px;
+    overflow: hidden;
+}
+
+.scroll-container {
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    float: left; /* DONT TOUCH OR WONT WORK PROPERLY XD.. */
+    width: 90%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--secondary-background);
+    padding: 20px;
+    margin: 10px;
+    border-radius: 25px;
+    transition: max-height 0.5s ease; 
+    overflow: hidden; 
+}
+
+.scroll-container h2 {
+    position: relative;
+    font-size: 30px;
+    padding: 0 0 5px 0;
+}
+
+.scroll-container h2 span::after {
+    float: right;
+    content: '+';
+}
+
+.settings-container{
+    display: block;
+    clear: both;
+    position: relative;
+    width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
+}
+
+.settings-container p {
+    padding: 5px 0px 5px 20px;
+}
+
+input[type=email], input[type=password], input[type=range] {
+    margin: 5px 0px 5px 20px;
+    width: 30%;
+    padding: 6px;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+    background-color: var(--primary-background);
+    color: rgb(189, 189, 189);
+    cursor: pointer;
+}
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Controls stlying. */
+
+/* SLIDER STYLING. */
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+input[type=range] {
+    appearance: none;
+    background-color: var(--tertiary-background);
+    border-radius: 25px;
+    width: 100%;
+    opacity: 0.7;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-background);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+
+.input-output {
+    color: black;
+    font-size: 32px;
+}
