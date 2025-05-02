@@ -77,28 +77,20 @@ def update_settings():
 
     try:
 
-        ''' Update device JSON. '''
+        ''' 1) Persist incoming data to JSON. '''
 
-        # Iterate over items and their values from form submission.
         for key, updated_value in request.form.items():
 
-            # Leverage regular expressions to take objects array keys and put them into a list. 
             keys = re.findall(r'\w+', key)
 
-            # Utilise config mangager method to update values.
             config_manager.update_settings(keys, updated_value)
 
-        ''' Update modules, pulling from the JSON. '''
+        ''' 2) Load settings with updated values. '''
 
         settings = config_manager.load_settings() 
 
-        camera.update_settings(settings.get('stream_quality', {}))
-        
-        ## Need a way to apply to pipeline?
-            # Object tracking settings.
-            # Object detection settings. 
-            # These modules obvs are only initialised in the pipeline.
-                # Not the routes file.
+        ''' 3) Push values into frameprocessor where all modules are initialised. '''
+        frame_processor.update_modules_settings(settings)
 
         # Return JSON success response. 
         return jsonify({"status": "success", "message": "Settings updated successfully"})

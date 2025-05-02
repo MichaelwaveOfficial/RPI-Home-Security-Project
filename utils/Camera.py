@@ -95,9 +95,9 @@ class Camera(object):
         ''' Apply user configuaration settings to camera ''' 
 
         self.settings = settings
-
-        preferred_quality = settings.get('preferred_quality')
-        quality = settings.get(preferred_quality, {})
+        
+        preferred_quality = self.settings.get('preferred_quality')
+        quality = self.settings.get(preferred_quality, {})
 
         self.resolution = tuple(quality.get('resolution'))
         self.framerate = int(quality.get('framerate'))

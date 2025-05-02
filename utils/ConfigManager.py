@@ -97,8 +97,6 @@ class ConfigManager(object):
         # Persist
         self.save_settings()
 
-        print(self.settings)
-
 
     def fetch_current_settings(self):
 

@@ -93,3 +93,21 @@ class FrameProcessor(object):
         ''' Switch colour channels to prevent confusion. '''
 
         return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+    
+    def update_modules_settings(self, settings : dict):
+
+        ''' Update module objects initialised in pipelines. '''
+
+        modules_map = {
+            'stream_quality' : (self.camera, 'update_settings'),
+            'motion_detection' : (self.object_detection, 'update_settings'),
+            #alerts: (self.alerts, 'update_settings),
+            #client: (self.client_comms, 'update_settings') THESE ARE FOR LATER EXPANSION.
+        }
+
+        for key, (module, method) in modules_map.items():
+
+            module_config = settings.get(key, {})
+
+            getattr(module, method)(module_config)
