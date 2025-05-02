@@ -24,6 +24,7 @@ class Camera(object):
         self.content_type = content_type
         self.use_video_port = use_video_port
         self.camera = None
+        self.settings = {}
 
         # Initialise camera in constructor when object is called. 
         self.initialise_camera()
@@ -40,9 +41,14 @@ class Camera(object):
         ''' Method to initialise camera with set configurations.'''
        
         try:
+
             self.camera = picamera2.Picamera2()
+
+            duration = int(1_000_000 // self.framerate)
+
             config = self.camera.create_preview_configuration(
-                main={'size': self.resolution}
+                main={'size': self.resolution},
+                controls={'FrameDurationLimits': (duration, duration)}
             )
             self.camera.configure(config)
             self.camera.start()
@@ -82,3 +88,19 @@ class Camera(object):
         ''' Destructor method to ensure camera object is destroyed. '''
 
         self.close_camera()
+
+
+    def update_settings(self, settings : dict):
+
+        ''' Apply user configuaration settings to camera ''' 
+
+        self.settings = settings
+
+        preferred_quality = settings.get('preferred_quality')
+        quality = settings.get(preferred_quality, {})
+
+        self.resolution = tuple(quality.get('resolution'))
+        self.framerate = int(quality.get('framerate'))
+
+        self.close_camera()
+        self.initialise_camera()

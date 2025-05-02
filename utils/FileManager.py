@@ -62,7 +62,7 @@ class FileManager(object):
                 capture_time = filename.split('_')[1]
 
                 # Append the images data to the images dictionary. 
-                images.append({
+                files.append({
                     # Full filepath.
                     'fullpath': fullpath,
                     # Standalone filename.
@@ -76,7 +76,7 @@ class FileManager(object):
                 })
 
         # Return dictionary containing meta data associated with images.
-        return images
+        return files
     
 
     def check_file_exhaustion(self, directory : str, file_limit : int) -> None:

@@ -23,7 +23,7 @@ class ConfigManager(object):
             self.save_settings()
 
     
-    def load_settings(self):
+    def load_settings(self) -> dict:
 
         try:
 
@@ -48,11 +48,6 @@ class ConfigManager(object):
     def save_settings(self):
 
         ''' Save currently applied settings to a JSON file for later access and retrieval. '''
-
-        dir = os.path.dirname(self.config_file)
-
-        if dir and not os.path.exists(dir):
-            os.makedirs(dir, exist_ok=True)
 
         # Open config file and write new values.
         with open(self.config_file, 'w') as config_file:

@@ -1,11 +1,11 @@
 {
     "motion_detection": {
-        "sensitivity": 80,
-        "threat_escalation_timer": 15,
-        "maximum_threat_threshold": 3
+        "sensitivity": 99,
+        "threat_escalation_timer": 3,
+        "maximum_threat_threshold": 4
     },
     "stream_quality": {
-        "preferred_quality": "performance",
+        "preferred_quality": "quality",
         "performance": {
             "framerate": 20,
             "resolution": [

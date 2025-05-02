@@ -1,5 +1,6 @@
 from .BboxUtils import calculate_center_point, measure_euclidean_distance
 from time import time 
+from settings import * 
 
 
 class ObjectTracking(object):
@@ -31,10 +32,10 @@ class ObjectTracking(object):
         self.EUCLIDEAN_DISTANCE_THRESHOLD = (EUCLIDEAN_DISTANCE_THRESHOLD ** 2)
 
         # Maximum threat level allowed.
-        self.MAXIMUM_THREAT_LEVEL = MAXIMUM_THREAT_LEVEL
+        self.MAXIMUM_THREAT_LEVEL =  DEFAULT_SETTINGS['motion_detection']['maximum_threat_threshold']
 
         # Time taken to escalate a detections threat level. 
-        self.ESCALATION_TIME = ESCALATION_TIME
+        self.ESCALATION_TIME = DEFAULT_SETTINGS['motion_detection']['threat_escalation_timer']
 
         self.max_center_points = 5
 
@@ -214,3 +215,15 @@ class ObjectTracking(object):
         for ID in stale_detections:
             # Use IDs to delete entries from tracked objects. 
             del self.tracked_objects[ID]
+
+    
+    def update_settings(self, settings : dict):
+
+        ''' Apply user configuaration settings to camera ''' 
+
+        self.settings = settings
+
+        self.MAXIMUM_THREAT_LEVEL = settings.get('maximum_threat_threshold')
+
+        self.ESCALATION_TIME = settings.get('threat_escalation_timer')
+        

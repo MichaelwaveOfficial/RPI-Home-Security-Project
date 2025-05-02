@@ -1,6 +1,7 @@
 import cv2 
 import os
 import numpy as np
+from settings import *
 
 class ObjectDetection(object):
 
@@ -11,8 +12,10 @@ class ObjectDetection(object):
         On top of this, helper functions pertaining to the handling of detections can also be found within this module. 
     '''
 
-    def __init__(self, min_contour_area : int = 25):
-        self.min_contour_area = min_contour_area
+    def __init__(self):
+
+        self.settings = {}
+        self.sensisitvity = DEFAULT_SETTINGS['motion_detection']['sensitivity'] # Min contour area.
 
 
     def pre_process_frame(self, frame : np.ndarray) -> np.ndarray:
@@ -59,7 +62,7 @@ class ObjectDetection(object):
         contours = cv2.findContours(frame_dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
 
         # Store list of detected motion areas.
-        filtered_contours = [contour for contour in contours if (cv2.contourArea(contour) **2) > (self.min_contour_area ** 2)]
+        filtered_contours = [contour for contour in contours if (cv2.contourArea(contour) **2) > (self.sensisitvity ** 2)]
         
         # Iterate over the filtrated detections.
         for contour in filtered_contours:
@@ -116,3 +119,12 @@ class ObjectDetection(object):
             used.add(index_a)
 
         return merged_contours
+
+    
+    def update_settings(self, settings : dict):
+
+        ''' Apply user configuaration settings to camera ''' 
+
+        self.settings = settings
+
+        self.sensisitvity = settings.get('sensitivity')

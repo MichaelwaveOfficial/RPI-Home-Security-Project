@@ -62,7 +62,7 @@ def settings():
 
     ''' Render settings paeg with current camera configuration. '''
 
-    settings = config_manager.load_settings()
+    settings = config_manager.load_settings() 
 
     return render_template(
         'settings.html',
@@ -77,6 +77,8 @@ def update_settings():
 
     try:
 
+        ''' Update device JSON. '''
+
         # Iterate over items and their values from form submission.
         for key, updated_value in request.form.items():
 
@@ -85,6 +87,18 @@ def update_settings():
 
             # Utilise config mangager method to update values.
             config_manager.update_settings(keys, updated_value)
+
+        ''' Update modules, pulling from the JSON. '''
+
+        settings = config_manager.load_settings() 
+
+        camera.update_settings(settings.get('stream_quality', {}))
+        
+        ## Need a way to apply to pipeline?
+            # Object tracking settings.
+            # Object detection settings. 
+            # These modules obvs are only initialised in the pipeline.
+                # Not the routes file.
 
         # Return JSON success response. 
         return jsonify({"status": "success", "message": "Settings updated successfully"})
@@ -102,7 +116,6 @@ def captures():
 
     image = file_manager.serve_file(filename, CAPTURES_DIR) if filename else None
     
-
     return render_template(
         'captures.html',
         images=images,
