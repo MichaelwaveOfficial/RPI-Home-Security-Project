@@ -115,7 +115,7 @@ def captures():
     ) 
 
 
-@app.route('/device_status')
+@app.route('/status')
 def device_status():
 
     return render_template(

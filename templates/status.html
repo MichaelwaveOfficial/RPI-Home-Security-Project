@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/status.css') }}">
+{% endblock head %}
+
+{% block body %}
+
+    <div class="status-container">
+        <h2>Camera Status</h2>
+        <div class="status-item">
+            <span class="label">Device Status:</span>
+            <span class="value" id="device-status">Loading...</span>
+        </div>
+        <div class="status-item">
+            <span class="label">Uptime:</span>
+            <span class="value" id="uptime">Loading...</span>
+        </div>
+        <div class="status-item">
+            <span class="label">Captures Today:</span>
+            <span class="value" id="captures-today">Loading...</span>
+        </div>
+    </div>
+
+{% endblock body %}
