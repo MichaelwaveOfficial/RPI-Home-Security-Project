@@ -1,4 +1,8 @@
 import os 
+from datetime import datetime
+import time
+from settings import CAPTURES_DIR
+
 
 class FileManager(object):
 
@@ -119,3 +123,21 @@ class FileManager(object):
                 return img
 
         return None
+
+    
+    def serve_captures_today(self, directory):
+
+        captures_today = []
+        
+        today_str = datetime.now().strftime('%Y-%m-%d')
+
+        all_captures = self.access_stored_captures(CAPTURES_DIR)
+
+        for cap in all_captures:
+
+            filename = cap['filename']
+
+            if today_str in filename:
+                captures_today.append(cap)
+
+        return captures_today

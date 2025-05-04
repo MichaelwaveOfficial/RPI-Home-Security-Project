@@ -1,6 +1,7 @@
 
 import picamera2
 import cv2
+import time 
 
 
 class Camera(object):
@@ -24,6 +25,7 @@ class Camera(object):
         self.content_type = content_type
         self.use_video_port = use_video_port
         self.camera = None
+        self.uptime = None
         self.settings = {}
 
         # Initialise camera in constructor when object is called. 
@@ -45,6 +47,8 @@ class Camera(object):
             self.camera = picamera2.Picamera2()
 
             duration = int(1_000_000 // self.framerate)
+
+            self.uptime = time.time()
 
             config = self.camera.create_preview_configuration(
                 main={'size': self.resolution},

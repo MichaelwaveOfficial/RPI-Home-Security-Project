@@ -10,15 +10,33 @@
         <h2>Camera Status</h2>
         <div class="status-item">
             <span class="label">Device Status:</span>
-            <span class="value" id="device-status">Loading...</span>
+            <span class="value" id="device-status">
+                {% if camera_status.status %}
+                    <span style="color: green;">Active</span>
+                {% else %}
+                    <span style="color: red;">Inactive</span>
+                {% endif %}
+            </span>
         </div>
         <div class="status-item">
             <span class="label">Uptime:</span>
-            <span class="value" id="uptime">Loading...</span>
+            <span class="value" id="uptime">
+                {% if camera_status.uptime %}
+                    <span>{{ camera_status.uptime }}</span>
+                {% else %}
+                    <span>Loading...</span>
+                {% endif %}
+            </span>
         </div>
         <div class="status-item">
             <span class="label">Captures Today:</span>
-            <span class="value" id="captures-today">Loading...</span>
+            <span class="value" id="captures-today">
+                {% if camera_status.caps_today %}
+                    <span>{{ camera_status.caps_today }}</span>
+                {% else %}
+                    <span>Loading...</span>
+                {% endif %}
+            </span>
         </div>
     </div>
 

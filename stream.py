@@ -7,6 +7,7 @@ from settings import *
 from utils.ConfigManager import ConfigManager
 from utils.FileManager import FileManager
 import re
+import time 
 
 # Instantiate Flask application.
 app = Flask(__name__)
@@ -118,8 +119,19 @@ def captures():
 @app.route('/status')
 def device_status():
 
+    formatted_uptime = time.strftime('%H:%M:%S', time.gmtime(time.time() - camera.uptime)) if camera.uptime else "Inactive"
+
+    captures_today = file_manager.serve_captures_today(CAPTURES_DIR)
+
+    camera_status = {
+        'status' : camera.is_active(),
+        'uptime' : formatted_uptime,
+        'caps_today' : len(captures_today)
+    }
+
     return render_template(
-        'status.html'
+        'status.html',
+        camera_status=camera_status
     ) 
 
 
