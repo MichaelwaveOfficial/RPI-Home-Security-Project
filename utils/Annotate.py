@@ -56,7 +56,6 @@ class Annotations(object):
                 * annotated_frame : (np.ndarray) : Processed frame with bbox and labels rendered.
         '''
         
-        # Iterate over each detection.
         for detection in detections:
 
             # Annotate vehicle corners.
@@ -83,12 +82,13 @@ class Annotations(object):
                 * annotated_frame : (np.ndarray) : Annotated frame with a detections given bounding box. 
         '''
 
+        latest_bbox = detection['bboxes']
         # Fetch detection bounding box values, typecast to full integer values. 
         x1, y1, x2, y2 = (
-            int(detection.get('x1')),
-            int(detection.get('y1')),
-            int(detection.get('x2')),
-            int(detection.get('y2'))
+            int(latest_bbox['x1']),
+            int(latest_bbox['y1']),
+            int(latest_bbox['x2']),
+            int(latest_bbox['y2']),
         )
 
         # Calculate detection dimensions.
@@ -310,8 +310,15 @@ class Annotations(object):
         # Fetch appropriate detection label dependant on vision_type.
         detection_label = self.create_label(detection=detection, vision_type=vision_type)
 
-        # Fetch bbox bottom.
-        y2= int(detection['y2'])
+        latest_bbox = detection['bboxes']
+
+        # Fetch detection bounding box values, typecast to full integer values. 
+        x1, y1, x2, y2 = (
+            int(latest_bbox['x1']),
+            int(latest_bbox['y1']),
+            int(latest_bbox['x2']),
+            int(latest_bbox['y2']),
+        )
 
         # Fetch detection center point values.
         center_x, center_y = calculate_center_point(detection)

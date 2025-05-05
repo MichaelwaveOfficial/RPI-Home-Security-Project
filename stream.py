@@ -29,8 +29,11 @@ def index():
 
     ''' Application main page. '''
 
+    camera_active = camera.is_active()
+
     return render_template(
-        'index.html'
+        'index.html',
+        camera_active=camera_active
     )
 
 

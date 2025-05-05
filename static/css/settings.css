@@ -6,7 +6,6 @@ body {
 }
 
 .main-container {
-    display: inline-grid;
     width: 100%;
     margin-top: 50px;
     overflow: hidden;
@@ -20,12 +19,13 @@ body {
     width: 90%;
     left: 50%;
     transform: translateX(-50%);
-    background-color: var(--secondary-background);
+    background-color: #1e1e1e;
     padding: 20px;
     margin: 10px;
     border-radius: 25px;
     transition: max-height 0.5s ease; 
     overflow: hidden; 
+    color:gainsboro;
 }
 
 .scroll-container h2 {
@@ -53,16 +53,23 @@ body {
     padding: 5px 0px 5px 20px;
 }
 
-input[type=email], input[type=password], input[type=range] {
+input[type=email],
+input[type=password],
+input[type=range] {
     margin: 5px 0px 5px 20px;
     width: 30%;
     padding: 6px;
     border-radius: 10px;
     border: none;
     font-size: 16px;
-    background-color: var(--primary-background);
+    background-color: #3498db;
     color: rgb(189, 189, 189);
     cursor: pointer;
+}
+
+input[type=email],
+input[type=password] {
+    color: black;
 }
 
 .toggle-container {
@@ -83,7 +90,7 @@ input[type=email], input[type=password], input[type=range] {
 
 input[type=range] {
     appearance: none;
-    background-color: var(--tertiary-background);
+    background-color: #3498db;
     border-radius: 25px;
     width: 100%;
     opacity: 0.7;
@@ -93,7 +100,7 @@ input[type="range"]::-webkit-slider-thumb {
     appearance: none;
     width: 20px;
     height: 20px;
-    background: var(--primary-background);
+    background: black;
     border-radius: 50%;
     cursor: pointer;
     transition: background 0.3s;
@@ -104,3 +111,78 @@ input[type="range"]::-webkit-slider-thumb {
     color: black;
     font-size: 32px;
 }
+
+select {
+appearance: none;
+background-color: #3498db;
+color: black;
+border: none;
+border-radius: 10px;
+padding: 10px 40px 10px 15px;
+font-size: 16px;
+cursor: pointer;
+width: 30%;
+margin: 5px 0 5px 20px;
+position: relative;
+background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2210%22%20height%3D%225%22%20viewBox%3D%220%200%2010%205%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M0%200l5%205%205-5z%22%20fill%3D%22%23bdc3c7%22/%3E%3C/svg%3E");
+background-repeat: no-repeat;
+background-position: right 10px center;
+background-size: 10px 5px;
+}
+
+.select:focus {
+outline: none;
+box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+/* Toggle switch styling */
+/* Toggle switch styling */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin: 5px 0 5px 20px;
+  }
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+  }
+  
+  .switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  
+  .switch input:checked + .switch-slider {
+    background-color: #3498db;
+  }
+  
+  .switch input:focus + .switch-slider {
+    box-shadow: 0 0 1px #3498db;
+  }
+  
+  .switch input:checked + .switch-slider:before {
+    transform: translateX(26px);
+  }

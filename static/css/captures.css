@@ -1,67 +1,169 @@
-
+  
 .container-container {
-    position: fixed;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    left: 50%;
-    top: 0%;
-    transform: translateY(100%);
-    transform: translateX(-50%);
-    padding: 10px;
-    width: 95%;
-    height: 80%;
-    background-color: var(--secondary-background);
-    border-radius: 15px;
+    flex: 1;
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    margin-top: 90px; /* Adjust if header height changes */
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .left-container, .right-container {
+    min-height: 83vh;
+    overflow-y: hidden;
+  }
+  
+  /* Left Panel */
+  .left-container {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  /* Filters Section */
+  .filters-container {
+    background-color: #1e1e1e;
+    padding: 1rem;
+    border-radius: 8px;
     display: flex;
     align-items: center;
-    padding: 20px;
-    gap: 10px;
-}
-
-.left-container, .right-container {
-    width: 50%;
-    height: 100%;
-    background-color: var(--tertiary-background);
-    border-radius: 25px;
-    padding: 20px;
-}
-
-.filters-container {
-    background-color: var(--secondary-background);
-    padding: 10px;
-    border-radius: 15px;
+    gap: 1rem;
+  }
+  
+  .filters-container h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-right: 1rem;
+  }
+  
+  .sort-button {
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .sort-button:hover {
+    background-color: #3a3a3a;
+  }
+  
+  .search-bar {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    background-color: #2a2a2a;
+    border: none;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 1rem;
+  }
+  
+  /* Captures List */
+  .list-container {
+    background-color: #1e1e1e;
+    padding: 1rem;
+    border-radius: 8px;
+    min-height: 73vh;
+    overflow-y: auto;
     display: flex;
+    flex-wrap: nowrap;
+    align-content: flex-start;
+    justify-content: center;
     align-items: center;
-    gap: 10px;
-}
-
-.list-container {
-    transform: translateX(10%);
-    background-color: var(--secondary-background);
-    margin-top: 5%;
-    width: 80%;
-    height: 80%;
-    padding: 10px;
-    border-radius: 15px;
+  }
+  
+  .capture-container {
+    background-color: #2a2a2a;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .capture-container:hover {
+    background-color: #3a3a3a;
+  }
+  
+  .capture-container h5 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .capture-container p {
+    font-size: 0.9rem;
+    color: #cccccc;
+  }
+  
+  /* Right Panel */
+  .right-container {
+    flex: 2;
+    background-color: #1e1e1e;
+    padding: 1rem;
+    border-radius: 8px;
     display: flex;
+    /* flex-direction: column; */
     align-items: center;
-    gap: 10px;
-    justify-content: space-around;
-}
-
-.capture-container {
-
-}
-
-.right-container {
-
-}
-
-.image-metadata {
+    justify-content: center;
+  }
+  
+  .image-view {
+    width: 100%;
     display: flex;
-    justify-self: center;
-}
-
-.image-view {
-    
-}
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .image-view img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    filter: invert(100%); /* Makes icons white */
+  }
+  
+  .image-view a {
+    background-color: #2a2a2a;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .image-view a:hover {
+    background-color: #3a3a3a;
+  }
+  
+  .image-view p {
+    font-size: 0.9rem;
+    color: #cccccc;
+    margin: 0.5rem 0;
+  }
+  
+  .image-view form {
+    margin-top: 1rem;
+  }
+  
+  .image-view form button {
+    background-color: #ff4d4d;
+    color: #ffffff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .image-view form button:hover {
+    background-color: #ff1a1a;
+  }
+  
+  .image-view h5 {
+    font-size: 1.2rem;
+    margin-top: 1rem;
+  }

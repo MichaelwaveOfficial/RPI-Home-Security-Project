@@ -8,12 +8,14 @@ body {
 }
 
 .status-container {
-    background-color: #fff;
+    background-color: #1e1e1e;
+    color:whitesmoke;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     width: 300px;
 }
+
 .status-item {
     margin-bottom: 15px;
     border-bottom: 1px solid #eee;
@@ -25,10 +27,10 @@ body {
 .label {
     font-weight: bold;
     margin-right: 10px;
-    color: #555;
+    color: #3498db;
 }
 .value {
-    color: #333;
+    color: whitesmoke;
 }
 .online {
     color: green;

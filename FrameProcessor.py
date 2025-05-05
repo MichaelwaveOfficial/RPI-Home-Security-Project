@@ -26,18 +26,21 @@ class FrameProcessor(object):
 
         try:
             
-            prev_frame = None
+            prev_raw_frame = None
+            raw_frame = None
+            current_detection = None
 
             while True:
                 
                 # Fetch frame from camera.
-                frame = self.camera.read_frame()
+                raw_frame = self.camera.read_frame()
+                annotated_frame = raw_frame.copy()
 
                 # Pursue detection logic is both current & previous frames are available.
-                if prev_frame is not None:
+                if prev_raw_frame is not None:
                     
                     # Return detection bounding boxes.
-                    detection_bboxes = self.object_detection.detect_motion(prev_frame, frame)[1]
+                    detection_bboxes = self.object_detection.detect_motion(prev_raw_frame, raw_frame)[1]
 
                     # If bounding boxes returned.
                     if detection_bboxes:
@@ -45,19 +48,17 @@ class FrameProcessor(object):
                         # Track the detections by assigning IDs.
                         tracked_detections = self.object_tracking.update_tracker(detection_bboxes)
 
-                        #print(tracked_detections)
-
                         # Annotate detections in frame with processed detection data. 
-                        frame = self.annotations.annotate_frame(frame=frame, detections=tracked_detections)
-                
+                        annotated_frame = self.annotations.annotate_frame(frame=raw_frame, detections=tracked_detections)
+                    
                 # Update previous frame with current.
-                prev_frame = frame
+                prev_raw_frame = raw_frame
 
                 # Switch colour channels RGB -> BGR.
-                frame = self.convert_frame_colour_channels(frame)
+                annotated_frame = self.convert_frame_colour_channels(annotated_frame)
 
                 # Encode raw frame.
-                encoded_frame = self.encode_frame_2_jpeg(frame)
+                encoded_frame = self.encode_frame_2_jpeg(annotated_frame)
 
                 # Yield that frame for streaming.
                 yield (

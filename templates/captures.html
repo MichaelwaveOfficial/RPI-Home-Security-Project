@@ -6,101 +6,102 @@
 
 {% block body %}
 
-    <div class="container-container">
+    <main class="main-content">
 
-        <div class="left-container">
+        <div class="container-container">
 
-            <!-- left-most container for list of accumulated captures and the filters associated. -->
-    
-            <div class="filters-container">
-    
-                <!-- Container for filters to sort captures old /new. -->
-    
-                <!-- Button to sort captures from recent to oldest. -->
-                <h2>Sort:</h2>
+            <div class="left-container">
 
-                <button 
-                    type='submit'
-                    class = 'sort-button'
-                >
-                    Newest
-                </button>
-                
-                <input type = 'text' class="search-bar" placeholder="&#x1F50E Search...">
-
-            </div>
-    
-            <div class="list-container">
-
-                {% if images %}
-
-                    {% for image in images %}
+                <!-- left-most container for list of accumulated captures and the filters associated. -->
         
-                        <div class="capture-container">
+                <div class="filters-container">
+        
+                    <!-- Container for filters to sort captures old /new. -->
+        
+                    <!-- Button to sort captures from recent to oldest. -->
+                    <h2>Sort:</h2>
+
+                    <button 
+                        type='submit'
+                        class = 'sort-button'
+                    >
+                        Newest
+                    </button>
                     
-                            <h5>{{ image.filename }}</h5>
+                    <input type = 'text' class="search-bar" placeholder="&#x1F50E Search...">
+
+                </div>
+        
+                <div class="list-container">
+
+                    {% if images %}
+
+                        {% for image in images %}
+            
+                            <div class="capture-container">
+                        
+                                <h5>{{ image.filename }}</h5>
+                                <p>Date: {{ image.capture_date }}</p>
+                                <p>Time: {{ image.capture_time }}</p>
+                                
+                            </div>
+            
+                        {% endfor %}
+
+                    {% else %}
+
+                        <h1>No Captures Present :(</h1>
+
+                    {% endif %}
+
+        
+                </div>
+        
+            </div>
+        
+            <div class="right-container">
+        
+                <!-- Container to view selected capture. -->
+        
+                <div class="image-metadata">
+        
+                    <div class="image-view">
+        
+                        {% if images %}
+        
+                            <img
+                                src="{{ image.fullpath }}"
+                                alt="{{ image.filename }}"
+                                class="img"
+                                loading="lazy"
+                            >
+        
+                            <!-- Reinvent donwload and delete feautres. AS JS? or just buttons in general. More intuitive. implementation. -->
+        
+                            <a href="" download>
+                                Download
+                            </a>
                             <p>Date: {{ image.capture_date }}</p>
                             <p>Time: {{ image.capture_time }}</p>
-                            
-                        </div>
+                            <form action="/captures/delete/{{ image.filename }}" method="POST">
+                                <button type="submit">
+                                    Delete
+                                </button>
+                            </form>
         
-                    {% endfor %}
-
-                {% else %}
-
-                    <h1>No Captures Present :(</h1>
-
-                {% endif %}
-
-    
-            </div>
-    
-        </div>
-    
-        <div class="right-container">
-    
-            <!-- Container to view selected capture. -->
-    
-            <div class="image-metadata">
-    
-                <div class="image-view">
-    
-                    {% if images %}
-    
-                        <img
-                            src="{{ image.fullpath }}"
-                            alt="{{ image.filename }}"
-                            class="img"
-                            loading="lazy"
-                        >
-    
-                        <!-- Reinvent donwload and delete feautres. AS JS? or just buttons in general. More intuitive. implementation. -->
-    
-                        <a href="" download>
-                            Download
-                        </a>
-                        <p>Date: {{ image.capture_date }}</p>
-                        <p>Time: {{ image.capture_time }}</p>
-                        <form action="/captures/delete/{{ image.filename }}" method="POST">
-                            <button type="submit">
-                                Delete
-                            </button>
-                        </form>
-    
-                        <h5>{{ image.filename }}</h5>
-    
-                    {% else %}
-    
-                        <h1>
-                            Select an image for viewing. :)
-                        </h1>
-    
-                    {% endif %}
-    
+                            <h5>{{ image.filename }}</h5>
+        
+                        {% else %}
+        
+                            <img src="{{ url_for('static', filename='icons/empty-folder.png')}}" alt="no image found">
+        
+                        {% endif %}
+        
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     {% block extra_js %}
         <!-- Inject page speicfic JavaScript here. -->

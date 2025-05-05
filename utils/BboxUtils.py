@@ -1,3 +1,4 @@
+import numpy as np
 
 
 def calculate_center_point(detection):
@@ -14,8 +15,22 @@ def calculate_center_point(detection):
                 on the x and y axis. 
     '''
 
-    x1, y1, x2, y2 = int(detection['x1']), int(detection['y1']), int(detection['x2']), int(detection['y2'])
+    if isinstance(detection, dict) and len(detection) == 4:
 
+        x1, y1, x2, y2 = int(detection['x1']), int(detection['y1']), int(detection['x2']), int(detection['y2'])
+
+    elif isinstance(detection, dict) and len(detection) > 4:
+
+        x1, y1, x2, y2 = int(detection['bboxes']['x1']), int(detection['bboxes']['y1']), int(detection['bboxes']['x2']), int(detection['bboxes']['y2'])
+    
+    elif isinstance(detection, (list, tuple, np.ndarray)):
+
+        x1, y1, x2, y2 = detection[:4]
+
+    else:
+
+        raise ValueError('Invalid Inputs do not match required formats -> Dictionary, List, Tuple, Numpy')
+    
     center_x, center_y = (x1 + x2) / 2, (y1 + y2) / 2
 
     return int(center_x), int(center_y)

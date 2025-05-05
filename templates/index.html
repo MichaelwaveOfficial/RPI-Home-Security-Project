@@ -8,16 +8,27 @@
 
     <div class="live-feed-container">
 
-        <!-- Container to display camera stream. -->
-        <div class="live-feed-window">
-            <img
-                src="{{ url_for('video_feed')}}"
-                alt="live camera feed."
-                class="img"
-            />
-        </div>
+        {% if camera_active %}
+
+            <!-- Container to display camera stream. -->
+            <div class="live-feed-window">
+                <img
+                    src="{{ url_for('video_feed')}}"
+                    alt="live camera feed."
+                    class="img"
+                />
+            </div>
+
+        {% else %}
+
+            <!-- Display spinner. -->
+            <div class="spinner-container">
+                <div class="spinner"></div>
+                <h1>Sourcing video stream.</h1>
+            </div>
+
+        {% endif %}
 
     </div>
-
 
 {% endblock body %}

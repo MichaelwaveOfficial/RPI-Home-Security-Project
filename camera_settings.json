@@ -1,7 +1,7 @@
 {
     "motion_detection": {
-        "sensitivity": 99,
-        "threat_escalation_timer": 4,
+        "sensitivity": 100,
+        "threat_escalation_timer": 13,
         "maximum_threat_threshold": 4
     },
     "stream_quality": {
@@ -22,8 +22,8 @@
         }
     },
     "alerts": {
-        "toggle": false,
-        "frequency": 727
+        "toggle": "on",
+        "frequency": 312
     },
     "client": {
         "target_email": "example@email.com",

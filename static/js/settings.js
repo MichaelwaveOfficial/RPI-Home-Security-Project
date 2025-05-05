@@ -87,7 +87,7 @@ function handleUserInput(event) {
     } else if (target.matches('.toggle')) {
         updateOutputField(
             `toggle-output${target.id.slice(-1)}`,
-            target.checked ? (target.id === 'toggle2' ? 'Stills' : 'True') : (target.id === 'toggle2' ? 'Clips' : 'False'))
+            target.checked ? (target.id === 'toggle0' ? 'On' : 'True') : (target.id === 'toggle0' ? 'Off' : 'False'))
     } else if (target.matches('.select')) {
         updateOutputField('select-output0', target.value)
     }

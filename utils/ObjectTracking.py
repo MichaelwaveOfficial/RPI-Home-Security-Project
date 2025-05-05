@@ -23,7 +23,7 @@ class ObjectTracking(object):
         self.tracked_objects = {}
 
         # Assign unique ID values to each detection.
-        self.ID_increment_counter : int = 0
+        self.ID_increment_counter : int = 1
 
         # Time taken for a detection to be deregistered.
         self.DEREGISTRATION_TIME = DEREGISTRATION_TIME
@@ -79,10 +79,12 @@ class ObjectTracking(object):
 
             else:
                 # Otherwise, handle fresh detection.
-                self.register_object(current_detection, updated_at, current_center_point)
+                matched_ID = self.register_object(current_detection, updated_at, current_center_point)
 
-            # Append that processed detection to the list. 
-            parsed_detections.append(current_detection)
+            tracked_object = self.tracked_objects[matched_ID].copy()
+
+            # Append that processed detection to the list. Either updated values or return preexisting entry.
+            parsed_detections.append(tracked_object)
 
         # Check for objects that need pruning (exceed the threshold).
         self.prune_outdated_objects(updated_at)
@@ -150,9 +152,18 @@ class ObjectTracking(object):
                 * None
         '''
 
+        new_ID = self.ID_increment_counter
+
         # Assign ID value to dictionary entry and required metadata.
         self.tracked_objects[self.ID_increment_counter] = {
+            'ID' : self.ID_increment_counter,
             'center_points' : [current_center_point],
+            'bboxes' : {
+                'x1': detection['x1'],
+                'y1': detection['y1'],
+                'x2': detection['x2'],
+                'y2': detection['y2']
+            },
             'first_detected' : seen_at,
             'last_detected' : seen_at,
             'threat_level' : 0
@@ -160,6 +171,8 @@ class ObjectTracking(object):
     
         # Increment counter to keep ID values unique.
         self.ID_increment_counter += 1
+
+        return new_ID
     
 
     def update_object(self, ID : int, detection : dict, updated_at : float, current_center_point : tuple[float, float]) -> None:
@@ -179,18 +192,26 @@ class ObjectTracking(object):
 
         # Append current center point value to detection center points list. 
         self.tracked_objects[ID]['center_points'].append(current_center_point)
-        # Update time detection was last seen.
-        self.tracked_objects[ID]['last_detected'] = updated_at
-        
-        if time() - updated_at > self.ESCALATION_TIME:
-            self.tracked_objects[ID]['threat_level'] += 1
-
-            if self.tracked_objects[ID]['threat_level'] > self.MAXIMUM_THREAT_LEVEL:
-                print(f'Detection {ID} exceeded maximum threat level.')
 
         # Maintain a rolling window of last five velocity values. 
         if len(self.tracked_objects[ID]['center_points']) > self.max_center_points:
             self.tracked_objects[ID]['center_points'].pop(0)
+
+        # Update time detection was last seen.
+        self.tracked_objects[ID]['last_detected'] = updated_at
+
+        self.tracked_objects[ID]['bboxes'] = {
+            'x1': detection['x1'],
+            'y1': detection['y1'],
+            'x2': detection['x2'],
+            'y2': detection['y2']
+        }
+
+        if (time() - updated_at) > self.ESCALATION_TIME:
+            self.tracked_objects[ID]['threat_level'] += 1
+
+            if self.tracked_objects[ID]['threat_level'] > self.MAXIMUM_THREAT_LEVEL:
+                print(f'Detection {ID} exceeded maximum threat level.')
 
         # Update detection dictionary with its entry within the tracked_objects dictionary.
         detection.update(self.tracked_objects[ID])
@@ -216,14 +237,12 @@ class ObjectTracking(object):
             # Use IDs to delete entries from tracked objects. 
             del self.tracked_objects[ID]
 
-    
+
     def update_settings(self, settings : dict):
 
         ''' Apply user configuaration settings to camera ''' 
 
         self.settings = settings.get('motion_detection', {})
-
         self.MAXIMUM_THREAT_LEVEL = self.settings.get('maximum_threat_threshold')
-
         self.ESCALATION_TIME = self.settings.get('threat_escalation_timer')
         

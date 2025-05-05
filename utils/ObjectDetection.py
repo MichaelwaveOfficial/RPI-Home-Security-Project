@@ -1,6 +1,7 @@
 import cv2 
 import os
 import numpy as np
+from .BboxUtils import calculate_center_point, measure_euclidean_distance
 from settings import *
 
 class ObjectDetection(object):
@@ -26,7 +27,7 @@ class ObjectDetection(object):
         frame_greyscale = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # Apply gaussian filter to reduce noise in an attempt to mitigate false positives. 
-        frame_blur = cv2.GaussianBlur(frame_greyscale, (7, 7), 0)
+        frame_blur = cv2.GaussianBlur(frame_greyscale, (9, 9), 1.5)
 
         # Cull salt & pepper noise.
         frame_smoothed = cv2.medianBlur(frame_blur, 3)
@@ -34,7 +35,7 @@ class ObjectDetection(object):
         return frame_smoothed
 
 
-    def detect_motion(self, prev_frame : np.ndarray, curr_frame : np.ndarray, binarisation_threshold : int = 25) -> tuple[np.ndarray, list[np.ndarray]]:
+    def detect_motion(self, prev_frame : np.ndarray, curr_frame : np.ndarray, binarisation_threshold : int = 105) -> tuple[np.ndarray, list[np.ndarray]]:
 
         ''' Detect motion in frame utilising traditional computer vision techniques. '''
 
@@ -54,15 +55,15 @@ class ObjectDetection(object):
         _, frame_thresholded = cv2.threshold(frame_difference, binarisation_threshold, 255, cv2.THRESH_BINARY)
 
         # Initialise kernel for morphological operations.
-        kernel = np.ones((6, 6), np.uint8)
+        kernel = np.ones((3, 3), np.uint8)
         # Dilate on the thresholded frame to fill in the gaps and solidify contour areas.
-        frame_dilation = cv2.dilate(frame_thresholded, kernel, iterations=3)
+        frame_dilation = cv2.dilate(frame_thresholded, kernel, iterations=1)
 
         # Fetch regions in the frame where motion has been detected. 
         contours = cv2.findContours(frame_dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
 
         # Store list of detected motion areas.
-        filtered_contours = [contour for contour in contours if (cv2.contourArea(contour) **2) > (self.sensisitvity ** 2)]
+        filtered_contours = [contour for contour in contours if (cv2.contourArea(contour)) > (self.sensisitvity)]
         
         # Iterate over the filtrated detections.
         for contour in filtered_contours:
@@ -79,7 +80,7 @@ class ObjectDetection(object):
         return frame_dilation, bboxes
     
 
-    def compile_small_contours(self, bboxes, merge_distance = 1200):
+    def compile_small_contours(self, bboxes, merge_distance = 100):
 
         ''' '''
 
@@ -96,27 +97,33 @@ class ObjectDetection(object):
             if index_a in used:
                 continue
 
-            x1, y1, x2, y2 = box_a 
+            center_point_a = calculate_center_point(box_a)
+
+            merge_group = [box_a]
+            used.add(index_a)
 
             for index_b, box_b in enumerate(np_bboxes):
 
                 if index_b in used or index_a == index_b:
                     continue
 
-                x1_b, y1_b, x2_b, y2_b = box_b
+                center_point_b = calculate_center_point(box_b)
 
-                if (
-                    (abs(x1 - x1_b) ** 2) < (merge_distance ** 2)
-                    and (abs(y1 - y1_b) ** 2) < (merge_distance ** 2)
-                    and (abs(x2 - x2_b) ** 2) < (merge_distance ** 2)
-                    and (abs(y2 - y2_b) ** 2) < (merge_distance ** 2)
-                ):
+                euclidean_distance_squared = measure_euclidean_distance(center_point_a, center_point_b)
 
-                    x1, y1, x2, y2 = max(x1, x1_b), max(y1, y1_b), min(x2, x2_b), min(y2, y2_b)
+                if euclidean_distance_squared < (merge_distance ** 2):
+
+                    merge_group.append(box_b)
                     used.add(index_b)
 
-            merged_contours.append({'x1' : x1, 'y1' : y1, 'x2' : x2, 'y2' : y2})
-            used.add(index_a)
+            group_array = np.array(merge_group)
+
+            merged_x1 = int(np.min(group_array[:, 0]))
+            merged_y1 = int(np.min(group_array[:, 1]))
+            merged_x2 = int(np.max(group_array[:, 2]))
+            merged_y2 = int(np.max(group_array[:, 3]))
+
+            merged_contours.append({'x1': merged_x1, 'y1': merged_y1, 'x2': merged_x2, 'y2': merged_y2})
 
         return merged_contours
 
