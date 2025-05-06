@@ -35,7 +35,7 @@ class ObjectDetection(object):
         return frame_smoothed
 
 
-    def detect_motion(self, prev_frame : np.ndarray, curr_frame : np.ndarray, binarisation_threshold : int = 105) -> tuple[np.ndarray, list[np.ndarray]]:
+    def detect_motion(self, prev_frame : np.ndarray, curr_frame : np.ndarray, binarisation_threshold : int = 90) -> tuple[np.ndarray, list[np.ndarray]]:
 
         ''' Detect motion in frame utilising traditional computer vision techniques. '''
 
@@ -80,7 +80,7 @@ class ObjectDetection(object):
         return frame_dilation, bboxes
     
 
-    def compile_small_contours(self, bboxes, merge_distance = 100):
+    def compile_small_contours(self, bboxes, merge_distance = 160):
 
         ''' '''
 

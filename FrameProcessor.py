@@ -27,20 +27,21 @@ class FrameProcessor(object):
         try:
             
             prev_raw_frame = None
-            raw_frame = None
-            current_detection = None
+            persistent_detections = {}
+            tracked_detections = []
 
             while True:
                 
                 # Fetch frame from camera.
                 raw_frame = self.camera.read_frame()
                 annotated_frame = raw_frame.copy()
+                thresholded_frame = raw_frame.copy()
 
                 # Pursue detection logic is both current & previous frames are available.
                 if prev_raw_frame is not None:
                     
                     # Return detection bounding boxes.
-                    detection_bboxes = self.object_detection.detect_motion(prev_raw_frame, raw_frame)[1]
+                    thresholded_frame, detection_bboxes = self.object_detection.detect_motion(prev_raw_frame.copy(), raw_frame)
 
                     # If bounding boxes returned.
                     if detection_bboxes:
@@ -48,11 +49,19 @@ class FrameProcessor(object):
                         # Track the detections by assigning IDs.
                         tracked_detections = self.object_tracking.update_tracker(detection_bboxes)
 
-                        # Annotate detections in frame with processed detection data. 
-                        annotated_frame = self.annotations.annotate_frame(frame=raw_frame, detections=tracked_detections)
+                        print(tracked_detections)
+
+                        persistent_detections = {detection['ID']: detection for detection in tracked_detections}
+
+                    else:
+
+                        tracked_detections = list(persistent_detections.values())
+
+                # Annotate detections in frame with processed detection data. 
+                annotated_frame = self.annotations.annotate_frame(frame=annotated_frame, detections=tracked_detections)
                     
                 # Update previous frame with current.
-                prev_raw_frame = raw_frame
+                prev_raw_frame = raw_frame.copy()
 
                 # Switch colour channels RGB -> BGR.
                 annotated_frame = self.convert_frame_colour_channels(annotated_frame)

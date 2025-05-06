@@ -1,4 +1,4 @@
-from .BboxUtils import calculate_center_point, measure_euclidean_distance
+from .BboxUtils import calculate_center_point, measure_euclidean_distance, calculate_detection_surface_area
 from time import time 
 from settings import * 
 
@@ -59,9 +59,6 @@ class ObjectTracking(object):
         # Get current time detections were being processed at. 
         updated_at = time()
 
-        # Initialise list to append detections post processing.
-        parsed_detections = []
-
         # Iterate over the current detections being ingested. 
         for current_detection in detections:
             
@@ -83,14 +80,11 @@ class ObjectTracking(object):
 
             tracked_object = self.tracked_objects[matched_ID].copy()
 
-            # Append that processed detection to the list. Either updated values or return preexisting entry.
-            parsed_detections.append(tracked_object)
-
         # Check for objects that need pruning (exceed the threshold).
         self.prune_outdated_objects(updated_at)
 
         # Return list of parsed_detections.
-        return parsed_detections
+        return list(self.tracked_objects.values())
     
 
     def match_detection_center_points(self, detection : dict, current_center_point : tuple[float, float]) -> int | None:
