@@ -80,6 +80,9 @@ class ObjectTracking(object):
 
             tracked_object = self.tracked_objects[matched_ID].copy()
 
+            if matched_ID in self.tracked_objects:
+                self.handle_detection_escalation(matched_ID, updated_at)
+
         # Check for objects that need pruning (exceed the threshold).
         self.prune_outdated_objects(updated_at)
 
@@ -160,6 +163,7 @@ class ObjectTracking(object):
             },
             'first_detected' : seen_at,
             'last_detected' : seen_at,
+            'last_escalated' : seen_at,
             'threat_level' : 0
         }
     
@@ -199,14 +203,8 @@ class ObjectTracking(object):
             'y1': detection['y1'],
             'x2': detection['x2'],
             'y2': detection['y2']
-        }
-
-        if (time() - updated_at) > self.ESCALATION_TIME:
-            self.tracked_objects[ID]['threat_level'] += 1
-
-            if self.tracked_objects[ID]['threat_level'] > self.MAXIMUM_THREAT_LEVEL:
-                print(f'Detection {ID} exceeded maximum threat level.')
-
+        }  
+        
         # Update detection dictionary with its entry within the tracked_objects dictionary.
         detection.update(self.tracked_objects[ID])
 
@@ -239,4 +237,23 @@ class ObjectTracking(object):
         self.settings = settings.get('motion_detection', {})
         self.MAXIMUM_THREAT_LEVEL = self.settings.get('maximum_threat_threshold')
         self.ESCALATION_TIME = self.settings.get('threat_escalation_timer')
+
+
+    def handle_detection_escalation(self, ID : int, updated_at : float) -> None:
+
+        detection = self.tracked_objects[ID]
+
+        elapsed_time = (updated_at - detection['first_detected'])
+        last_escalation_time = (updated_at - detection['last_escalated'])
+
+        if elapsed_time >= self.ESCALATION_TIME \
+            and last_escalation_time >= self.ESCALATION_TIME:
+
+            detection['threat_level'] += 1
+            detection['last_escalated'] = updated_at
+
+            if detection['threat_level'] > self.MAXIMUM_THREAT_LEVEL:
+                # Report detection.
+                print(f'Detection {ID} exceeded maximum threat level.')
+                del self.tracked_objects[ID]
         

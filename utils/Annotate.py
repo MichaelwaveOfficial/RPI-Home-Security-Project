@@ -12,8 +12,9 @@ class Annotations(object):
         # Key value pairs for bounding box colours and their purpose.
         self.bbox_colours = {
             'standard' : (10, 255, 10),
-            'offender' : (10, 10, 255),
-            'trail' : (255, 10, 10)
+            'level_1' : (0, 255, 0),
+            'level_2' : (225, 165, 0),
+            'level_3' : (255, 0, 0),
         }
 
         # Endless styling attributes.
@@ -26,7 +27,7 @@ class Annotations(object):
         self.max_thickness = 5
 
         self.font = cv2.FONT_HERSHEY_DUPLEX
-        self.font_scale = 2
+        self.font_scale = 1
         self.font_colour = (255, 255, 255)
         self.font_thickness = 2
 
@@ -98,8 +99,12 @@ class Annotations(object):
         corner_radius = max(min(int(detection_size * self.size_factor), self.max_corner_radius), self.min_corner_radius)
         thickness = max(min(int(detection_size * self.thickness_factor) * 2, self.max_thickness), self.min_thickness)
 
+        threat_level = int(detection.get('threat_level'))
+
+        colour_key = f'level_{threat_level}'
+
         # Fetch appropriate colour for detection.
-        colour = self.bbox_colours['standard']     
+        colour = self.bbox_colours.get(colour_key, self.bbox_colours['standard'])     
 
         # Store corner values within a list.
         bbox_corners = [

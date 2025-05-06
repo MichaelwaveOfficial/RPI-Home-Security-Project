@@ -27,7 +27,7 @@ CAPTURES_DIR = os.path.join(BASE_DIR, CAPTURES_DIR)
 DEFAULT_SETTINGS = {
     "motion_detection" : {
         "sensitivity": 40,
-        "threat_escalation_timer": 15,
+        "threat_escalation_timer": 5,
         "maximum_threat_threshold": 3
     },
     "stream_quality" : {
