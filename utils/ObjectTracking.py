@@ -7,7 +7,12 @@ class ObjectTracking(object):
 
     ''' Module to parse detection data, track them by assigning IDs and pruning them when no longer required. '''
 
-    def __init__(self, EUCLIDEAN_DISTANCE_THRESHOLD : int = 125, MAXIMUM_THREAT_LEVEL : int = DEFAULT_SETTINGS['motion_detection']['maximum_threat_threshold'], DEREGISTRATION_TIME : int = 4, ESCALATION_TIME : int = DEFAULT_SETTINGS['motion_detection']['threat_escalation_timer']) -> None:
+    def __init__(
+            self,
+            EUCLIDEAN_DISTANCE_THRESHOLD : int = 125,
+            MAXIMUM_THREAT_LEVEL : int = DEFAULT_SETTINGS['motion_detection']['maximum_threat_threshold'],
+            DEREGISTRATION_TIME : int = 4, ESCALATION_TIME : int = DEFAULT_SETTINGS['motion_detection']['threat_escalation_timer']
+        ) -> None:
         
         '''
             Instantiate Object tracking module.
@@ -33,6 +38,8 @@ class ObjectTracking(object):
 
         # Maximum threat level allowed.
         self.MAXIMUM_THREAT_LEVEL =  MAXIMUM_THREAT_LEVEL
+
+        print(self.MAXIMUM_THREAT_LEVEL)
 
         # Time taken to escalate a detections threat level. 
         self.ESCALATION_TIME = ESCALATION_TIME
@@ -256,4 +263,3 @@ class ObjectTracking(object):
                 # Report detection.
                 print(f'Detection {ID} exceeded maximum threat level.')
                 del self.tracked_objects[ID]
-        

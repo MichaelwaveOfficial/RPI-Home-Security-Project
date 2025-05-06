@@ -1,7 +1,10 @@
 ''' Ground truth file for single source of application configurations. '''
 
+from dotenv import load_dotenv
 from pathlib import Path 
 import os 
+
+load_dotenv()
 
 ''' Camera Settings.  '''
 
@@ -16,11 +19,11 @@ use_video_port = True
 
 ''' Paths. '''
 
-CAPTURES_DIR = '/captures'
+CAPTURES_DIR = 'captures'
 BASE_DIR = Path(__file__).resolve().parent
 CAMER_CONFIG = 'camera_settings.json'
 CAMERA_CONFIG_PATH = os.path.join(BASE_DIR, CAMER_CONFIG)
-CAPTURES_DIR = os.path.join(BASE_DIR, CAPTURES_DIR)
+CAPTURES_DIR_PATH = os.path.join(BASE_DIR, CAPTURES_DIR)
 
 ''' Base config file. '''
 
@@ -60,6 +63,13 @@ DEFAULT_SETTINGS = {
 
 ''' Device Storage Configuration Settings. '''
 
-FORMATTED_FILENAME_DATE : str = '%a-%b-%Y_%I-%M-%S%p',
-FORMATTED_DISPLAY_DATE : str = '%I:%M:%S%p',
+FORMATTED_FILENAME_DATE : str = '%a-%b-%Y_%I-%M-%S%p'
+FORMATTED_DISPLAY_DATE : str = '%I:%M:%S%p'
 MAXIMUM_FILES_STORED : int = 60
+
+
+''' EMAIL configs. '''
+
+APP_EMAIL : str = os.getenv('APP_EMAIL')
+APP_PASSWORD : str = os.getenv('APP_PASSWORD')
+RECIPIENT_EMAIL : str = os.getenv('RECIPIENT_EMAIL')

@@ -3,8 +3,10 @@ from utils.Camera import Camera
 from utils.Annotate import Annotations
 from utils.ObjectDetection import ObjectDetection
 from utils.ObjectTracking import ObjectTracking
-
+from utils.ThreatManagement import ThreatManagement
+from settings import *
 import cv2 
+
 
 class FrameProcessor(object):
 
@@ -18,6 +20,13 @@ class FrameProcessor(object):
         self.annotations = Annotations()
         self.object_detection = ObjectDetection()
         self.object_tracking = ObjectTracking()
+        self.threat_manager = ThreatManagement(
+            CLIENT_USERNAME=APP_EMAIL,
+            CLIENT_PASSWORD=APP_PASSWORD,
+            TARGET_EMAIL=RECIPIENT_EMAIL, 
+            MAX_THREAT_LEVEL=3,
+            CAPTURES_DIR=CAPTURES_DIR_PATH
+        )
 
     
     def generate_frames(self):
@@ -36,6 +45,8 @@ class FrameProcessor(object):
                 raw_frame = self.camera.read_frame()
                 annotated_frame = raw_frame.copy()
                 thresholded_frame = raw_frame.copy()
+
+                ''' Abstracted motion detection logic. '''
 
                 # Pursue detection logic is both current & previous frames are available.
                 if prev_raw_frame is not None:
@@ -59,6 +70,11 @@ class FrameProcessor(object):
 
                 # Annotate detections in frame with processed detection data. 
                 annotated_frame = self.annotations.annotate_frame(frame=annotated_frame, detections=tracked_detections)
+
+                # Check detections, their threat levels and whether or not they need to be handled.
+                self.threat_manager.handle_threats(tracked_detections, annotated_frame)
+
+                ''' Boring frame processing stuff for streaming. '''
                     
                 # Update previous frame with current.
                 prev_raw_frame = raw_frame.copy()
