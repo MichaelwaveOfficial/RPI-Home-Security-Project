@@ -44,9 +44,7 @@ class FrameProcessor(object):
                 # Fetch frame from camera.
                 raw_frame = self.camera.read_frame()
                 annotated_frame = raw_frame.copy()
-                thresholded_frame = raw_frame.copy()
-
-                ''' Abstracted motion detection logic. '''
+                '''thresholded_frame = raw_frame.copy()
 
                 # Pursue detection logic is both current & previous frames are available.
                 if prev_raw_frame is not None:
@@ -59,28 +57,26 @@ class FrameProcessor(object):
                         
                         # Track the detections by assigning IDs.
                         tracked_detections = self.object_tracking.update_tracker(detection_bboxes)
-
-                        print(tracked_detections)
-
+                        
+                        # List -> Dict w/ ID key.
                         persistent_detections = {detection['ID']: detection for detection in tracked_detections}
 
                     else:
-
+                        
+                        # Dict -> List when no other detections present.
                         tracked_detections = list(persistent_detections.values())
 
                 # Annotate detections in frame with processed detection data. 
                 annotated_frame = self.annotations.annotate_frame(frame=annotated_frame, detections=tracked_detections)
-
-                # Check detections, their threat levels and whether or not they need to be handled.
-                self.threat_manager.handle_threats(tracked_detections, annotated_frame)
-
-                ''' Boring frame processing stuff for streaming. '''
                     
                 # Update previous frame with current.
                 prev_raw_frame = raw_frame.copy()
 
                 # Switch colour channels RGB -> BGR.
-                annotated_frame = self.convert_frame_colour_channels(annotated_frame)
+                annotated_frame = self.convert_frame_colour_channels(annotated_frame)'''
+
+                # Check detections, their threat levels and whether or not they need to be handled.
+                #self.threat_manager.handle_threats(tracked_detections, annotated_frame)
 
                 # Encode raw frame.
                 encoded_frame = self.encode_frame_2_jpeg(annotated_frame)
@@ -128,8 +124,6 @@ class FrameProcessor(object):
         modules_map = {
             'stream_quality' : (self.camera, 'update_settings'),
             'motion_detection' : (self.object_detection, 'update_settings'),
-            #alerts: (self.alerts, 'update_settings),
-            #client: (self.client_comms, 'update_settings') THESE ARE FOR LATER EXPANSION.
         }
 
         for key, (module, method) in modules_map.items():

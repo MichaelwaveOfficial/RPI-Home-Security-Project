@@ -58,9 +58,6 @@ def video_feed():
         ), 503
 
 
-''' Other additional routes for later implementation. '''
-
-
 @app.route('/settings')
 def settings():
 
