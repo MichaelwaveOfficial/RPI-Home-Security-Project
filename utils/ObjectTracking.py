@@ -39,8 +39,6 @@ class ObjectTracking(object):
         # Maximum threat level allowed.
         self.MAXIMUM_THREAT_LEVEL =  MAXIMUM_THREAT_LEVEL
 
-        print(self.MAXIMUM_THREAT_LEVEL)
-
         # Time taken to escalate a detections threat level. 
         self.ESCALATION_TIME = ESCALATION_TIME
 

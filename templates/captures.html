@@ -21,14 +21,18 @@
                     <!-- Button to sort captures from recent to oldest. -->
                     <h2>Sort:</h2>
 
-                    <button 
-                        type='submit'
-                        class = 'sort-button'
-                    >
-                        Newest
-                    </button>
+                    <form method="GET" action="/captures">
+                        <button 
+                            type="submit" 
+                            class="sort-button" 
+                            name="sort" 
+                            value="{{ 'oldest' if sort_order == 'newest' else 'newest' }}"
+                        >
+                            {{ 'Oldest' if sort_order == 'newest' else 'Newest' }}
+                        </button>
+                    </form>
                     
-                    <input type = 'text' class="search-bar" placeholder="&#x1F50E Search...">
+                    <input type = 'text' id="search-bar" class="search-bar" placeholder="&#x1F50E Search...">
 
                 </div>
         
@@ -37,14 +41,18 @@
                     {% if images %}
 
                         {% for image in images %}
+
+                        <a href="{{ url_for('captures') }}?filename={{ image.filename }}" class="image_url">
             
-                            <div class="capture-container">
-                        
-                                <h5>{{ image.filename }}</h5>
-                                <p>Date: {{ image.capture_date }}</p>
-                                <p>Time: {{ image.capture_time }}</p>
-                                
-                            </div>
+                                <div class="capture-container" data-item="{{ image.filename }} {{ image.capture_date }} {{ image.capture_time }}">
+                            
+                                    <h5>{{ image.filename }}</h5>
+                                    <p>Date: {{ image.capture_date }}</p>
+                                    <p>Time: {{ image.capture_time }}</p>
+                                    
+                                </div>
+
+                            </a>
             
                         {% endfor %}
 
@@ -67,33 +75,31 @@
         
                     <div class="image-view">
         
-                        {% if images %}
+                        {% if current_image %}
         
                             <img
-                                src="{{ image.fullpath }}"
-                                alt="{{ image.filename }}"
+                                src="{{ current_image.fullpath }}"
+                                alt="{{ current_image.filename }}"
                                 class="img"
                                 loading="lazy"
-                            >
-        
-                            <!-- Reinvent donwload and delete feautres. AS JS? or just buttons in general. More intuitive. implementation. -->
-        
-                            <a href="" download>
-                                Download
-                            </a>
-                            <p>Date: {{ image.capture_date }}</p>
-                            <p>Time: {{ image.capture_time }}</p>
-                            <form action="/captures/delete/{{ image.filename }}" method="POST">
-                                <button type="submit">
-                                    Delete
-                                </button>
-                            </form>
-        
-                            <h5>{{ image.filename }}</h5>
+                            />
+
+                            <div class="image-view-controls">
+                                <a href="" download>
+                                    Download
+                                </a>
+                                <p>Date: {{ current_image.capture_date }}</p>
+                                <p>Time: {{ current_image.capture_time }}</p>
+                                <form action="/captures/delete/{{ current_image.filename ~ '.jpg' }}" method="POST">
+                                    <button type="submit">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
         
                         {% else %}
         
-                            <img src="{{ url_for('static', filename='icons/empty-folder.png')}}" alt="no image found">
+                            <img src="{{ url_for('static', filename='icons/empty-folder.png')}}" alt="no image found" class="no-image-selected">
         
                         {% endif %}
         

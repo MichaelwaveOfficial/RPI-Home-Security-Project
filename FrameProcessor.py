@@ -44,7 +44,7 @@ class FrameProcessor(object):
                 # Fetch frame from camera.
                 raw_frame = self.camera.read_frame()
                 annotated_frame = raw_frame.copy()
-                '''thresholded_frame = raw_frame.copy()
+                thresholded_frame = raw_frame.copy()
 
                 # Pursue detection logic is both current & previous frames are available.
                 if prev_raw_frame is not None:
@@ -73,10 +73,10 @@ class FrameProcessor(object):
                 prev_raw_frame = raw_frame.copy()
 
                 # Switch colour channels RGB -> BGR.
-                annotated_frame = self.convert_frame_colour_channels(annotated_frame)'''
+                annotated_frame = self.convert_frame_colour_channels(annotated_frame)
 
                 # Check detections, their threat levels and whether or not they need to be handled.
-                #self.threat_manager.handle_threats(tracked_detections, annotated_frame)
+                self.threat_manager.handle_threats(tracked_detections, annotated_frame)
 
                 # Encode raw frame.
                 encoded_frame = self.encode_frame_2_jpeg(annotated_frame)

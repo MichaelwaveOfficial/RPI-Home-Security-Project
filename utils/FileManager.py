@@ -12,24 +12,6 @@ class FileManager(object):
         self.file_order : bool = False
 
 
-    def sort_files(self, files : list[dict], reverse_order : bool = False) -> list[dict]:
-
-        '''
-        Sort list containing captures from newest to oldest from the order parameterised, OS natively sorts in order due to filenames date+time structure,
-        meaning it is simple enough to reverse the list these entries are stored in. 
-
-        :param: files - list of files to be sorted. 
-        :param: reverse_order - Order required for files to be sorted into.
-        :return: sorted_list - Sorted list of images.
-        '''
-
-        return sorted(
-            files,
-            key=lambda cap: f"{cap['capture_date']}{cap['capture_time']}",
-            reverse=reverse_order
-        )
-    
-
     def access_stored_captures(self, directory: str) -> list[dict[str, str]]:
 
         '''
@@ -78,6 +60,9 @@ class FileManager(object):
                     # Time the capture was taken.
                     'capture_time' : capture_time,
                 })
+
+        # Sort the files based on capture_date and capture_time
+        files.sort(key=lambda x: (x['capture_date'], x['capture_time']), reverse=not self.file_order)
 
         # Return dictionary containing meta data associated with images.
         return files

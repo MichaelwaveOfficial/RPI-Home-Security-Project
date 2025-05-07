@@ -1,6 +1,6 @@
 ''' Basic web server leveraging Flask web framework where video is streamed from the raspberry pis camera. '''
 
-from flask import Flask, Response, render_template, request, jsonify
+from flask import Flask, Response, render_template, request, jsonify, send_from_directory
 from utils.Camera import Camera
 from FrameProcessor import FrameProcessor
 from settings import *
@@ -101,19 +101,43 @@ def update_settings():
         return jsonify({"status": "error", "message": f"Failed to update settings!\n{e}"})
 
 
-@app.route('/captures')
+@app.route('/captures/<path:filename>')
+def serve_capture_file(filename):
+    # serves GET /captures/<filename>
+    return send_from_directory(CAPTURES_DIR, filename)
+
+
+@app.route('/captures', methods=['GET'])
 def captures():
+
+    sort_order = request.args.get('sort', 'newest')
+
+    file_manager.file_order = (sort_order == 'oldest')
 
     filename = request.args.get('filename')
     images = file_manager.access_stored_captures(CAPTURES_DIR)
+    current_image = file_manager.serve_file(filename, CAPTURES_DIR) if filename else None
 
-    image = file_manager.serve_file(filename, CAPTURES_DIR) if filename else None
-    
     return render_template(
         'captures.html',
         images=images,
-        image=image
-    ) 
+        current_image=current_image,
+        sort_order=sort_order
+    )
+
+
+@app.route('/captures/delete/<path:filename>', methods=['POST'])
+def delete_capture(filename):
+
+    file_path = os.path.join(CAPTURES_DIR, filename)
+
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        print(f"Deleted: {file_path}")
+    else:
+        print(f"File not found: {file_path}")
+
+    return redirect(url_for('captures'))
 
 
 @app.route('/status')
