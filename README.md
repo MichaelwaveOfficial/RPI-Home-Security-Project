@@ -100,7 +100,7 @@ The status page will give you realtime values on the cameras status, its operati
 
 Clone this git repo with:
 
-    - git clone https://github.com/MichaelwaveOfficial/rpi_security_system_rebuild_25.git
+    - git clone https://github.com/MichaelwaveOfficial/RPI-Home-Security-Project.git
 
     - cd project folder
 
