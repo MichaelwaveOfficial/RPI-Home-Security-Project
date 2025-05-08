@@ -113,9 +113,9 @@ class FileManager(object):
 
         captures_today = []
         
-        today_str = datetime.now().strftime('%Y-%m-%d')
+        today_str = datetime.now().strftime('%a-%b-%Y')
 
-        all_captures = self.access_stored_captures(CAPTURES_DIR)
+        all_captures = self.access_stored_captures(directory)
 
         for cap in all_captures:
 
