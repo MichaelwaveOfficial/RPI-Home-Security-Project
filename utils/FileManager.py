@@ -42,10 +42,12 @@ class FileManager(object):
                 fullpath = os.path.join(directory, file)
                 # Get the standalone filename (date) and the file extention.
                 filename, file_ext = os.path.splitext(file)
-                # Access just the date.
-                capture_date = filename.split('_')[0]
-                # Access the time. 
-                capture_time = filename.split('_')[1]
+            
+                filename_parts = filename.split('_')
+
+                ID = filename_parts[1]
+                capture_date = filename_parts[2]
+                capture_time = filename_parts[3]
 
                 # Append the images data to the images dictionary. 
                 files.append({
@@ -59,6 +61,8 @@ class FileManager(object):
                     'capture_date': capture_date, 
                     # Time the capture was taken.
                     'capture_time' : capture_time,
+                    # Detection ID
+                    'ID' : ID
                 })
 
         # Sort the files based on capture_date and capture_time

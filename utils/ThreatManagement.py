@@ -33,8 +33,9 @@ class ThreatManagement(object):
 
     def handle_threats(self, tracked_detections, frame):
 
-        for detection in tracked_detections:
+        ''' Iterate over detections being tracked and assess their threat level. '''
 
+        for detection in tracked_detections:
             self.check_threat_level(detection, frame) 
 
     
@@ -97,10 +98,13 @@ class ThreatManagement(object):
             try:
 
                 # Email subject. 
-                subject = f'Security Alert: Threat detected'
+                subject = f'Security Alert: Threat detected at level {detection['threat_level']}'
 
                 # Email contents.
-                contents = f'Your Raspberry Pi has detected a threat at {time.strftime("%Y-%m-%d %H:%M:%S")}'
+                contents = f'''
+                    Detected at: {time.strftime("%Y-%m-%d %H:%M:%S")}\n
+                    Please see the capture attatched. 
+                '''
 
                 # Email object.
                 self.yagmail_client.send(

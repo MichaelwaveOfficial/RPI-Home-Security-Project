@@ -44,11 +44,12 @@
 
                         <a href="{{ url_for('captures') }}?filename={{ image.filename }}" class="image_url">
             
-                                <div class="capture-container" data-item="{{ image.filename }} {{ image.capture_date }} {{ image.capture_time }}">
+                                <div class="capture-container" data-item="{{ image.filename }} {{ image.capture_date }} {{ image.capture_time }} {{ image.ID }}">
                             
                                     <h5>{{ image.filename }}</h5>
                                     <p>Date: {{ image.capture_date }}</p>
                                     <p>Time: {{ image.capture_time }}</p>
+                                    <p>ID: {{ image.ID }}</p>
                                     
                                 </div>
 
@@ -90,6 +91,7 @@
                                 </a>
                                 <p>Date: {{ current_image.capture_date }}</p>
                                 <p>Time: {{ current_image.capture_time }}</p>
+                                <p>ID: {{ current_image.ID }}</p>
                                 <form action="/captures/delete/{{ current_image.filename ~ '.jpg' }}" method="POST">
                                     <button type="submit">
                                         Delete

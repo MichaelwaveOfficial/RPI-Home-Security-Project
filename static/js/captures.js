@@ -2,12 +2,12 @@
 document.addEventListener('DOMContentLoaded', function () {
 
     const nameSearch = document.getElementById('search-bar')
-    nameSearch.addEventListener('input', () => filterProjects(nameSearch))
+    nameSearch.addEventListener('input', () => filterContent(nameSearch))
 
 })
 
 
-function filterProjects(searchInput) {
+function filterContent(searchInput) {
 
     const captures = document.querySelectorAll('.capture-container');
     const query = searchInput.value.toLowerCase();
