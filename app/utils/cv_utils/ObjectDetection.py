@@ -2,7 +2,7 @@ import cv2
 import os
 import numpy as np
 from .BboxUtils import calculate_center_point, measure_euclidean_distance
-from settings import *
+from app.settings import *
 
 class ObjectDetection(object):
 

@@ -29,9 +29,15 @@ class Camera(object):
         self.settings = {}
 
         # Initialise camera in constructor when object is called. 
-        self.initialise_camera()
+        # Worked with old app structure. self.initialise_camera()
 
-    
+
+    def get_camera(self):
+        if self._camera is None:
+            self.initialise_camera()
+        return self._camera
+
+
     def is_active(self):
 
         # Camera class status.
@@ -56,6 +62,7 @@ class Camera(object):
             )
             self.camera.configure(config)
             self.camera.start()
+            
         except Exception as e:
             raise RuntimeError(f"Failed to initialize camera: {str(e)}")
         

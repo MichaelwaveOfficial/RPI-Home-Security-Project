@@ -3,7 +3,7 @@ import yagmail
 import os 
 from datetime import datetime 
 import time 
-from settings import *
+from ...settings import *
 
 
 class ThreatManagement(object):
@@ -98,7 +98,7 @@ class ThreatManagement(object):
             try:
 
                 # Email subject. 
-                subject = f'Security Alert: Threat detected at level {detection['threat_level']}'
+                subject = f'Security Alert: Threat detected at level {detection["threat_level"]}'
 
                 # Email contents.
                 contents = f'''

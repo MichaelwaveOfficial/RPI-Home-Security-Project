@@ -1,10 +1,10 @@
 
-from utils.Camera import Camera
-from utils.Annotate import Annotations
-from utils.ObjectDetection import ObjectDetection
-from utils.ObjectTracking import ObjectTracking
-from utils.ThreatManagement import ThreatManagement
-from settings import *
+from app.utils.device_utils.Camera import Camera
+from app.utils.cv_utils.Annotate import Annotations
+from app.utils.cv_utils.ObjectDetection import ObjectDetection
+from app.utils.cv_utils.ObjectTracking import ObjectTracking
+from app.utils.cv_utils.ThreatManagement import ThreatManagement
+from .settings import *
 import cv2 
 
 

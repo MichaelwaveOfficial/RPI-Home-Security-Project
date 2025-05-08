@@ -42,7 +42,7 @@
 
                         {% for image in images %}
 
-                        <a href="{{ url_for('captures') }}?filename={{ image.filename }}" class="image_url">
+                        <a href="{{ url_for('main.captures') }}?filename={{ image.filename }}" class="image_url">
             
                                 <div class="capture-container" data-item="{{ image.filename }} {{ image.capture_date }} {{ image.capture_time }} {{ image.ID }}">
                             
@@ -79,7 +79,7 @@
                         {% if current_image %}
         
                             <img
-                                src="{{ current_image.fullpath }}"
+                                src="{{ url_for('main.serve_capture_file', filename=current_image.filename ~ '.jpg') }}"
                                 alt="{{ current_image.filename }}"
                                 class="img"
                                 loading="lazy"

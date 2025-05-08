@@ -1,7 +1,7 @@
 import os 
 from datetime import datetime
 import time
-from settings import CAPTURES_DIR
+from app.settings import CAPTURES_DIR
 
 
 class FileManager(object):
@@ -25,11 +25,6 @@ class FileManager(object):
         '''
 
         files = []
-
-        # Does not want to create the specific directory because Linux...
-
-        if not os.path.exists(directory):
-            os.makedirs(directory)
 
         # Loop over all image files found within the captures directory. 
         for file in os.listdir(directory):

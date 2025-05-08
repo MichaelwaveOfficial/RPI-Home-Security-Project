@@ -1,6 +1,6 @@
 from .BboxUtils import calculate_center_point, measure_euclidean_distance, calculate_detection_surface_area
 from time import time 
-from settings import * 
+from app.settings import * 
 
 
 class ObjectTracking(object):
